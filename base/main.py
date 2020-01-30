@@ -5,7 +5,7 @@ port = 3
 
 def connect_to_scout():
 	socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-	socket.connect((serverMACAddress, port))
+	socket.connect((scout_bt_mac_addr, port))
 	return socket
 
 socket = connect_to_scout()
@@ -16,5 +16,5 @@ while 1:
 	if text == "quit":
 		break
 	socket.send(text)
-	
+
 socket.close()
