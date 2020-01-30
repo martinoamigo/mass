@@ -15,10 +15,10 @@ def accept_base_connection():
 		print("Connection accepted.")
 	except e:
 		print("Error accepting base connection: ", sys.exc_info()[0])
-	return client
+	return client, socket
 
 
-def listen(client):
+def listen(client, socket):
 	try:	
 		print("Listening...")
 		while 1:
@@ -33,5 +33,5 @@ def listen(client):
 		client = accept_base_connection()
 		listen(client)
 
-client = accept_base_connection()
-listen(client)
+client, socket = accept_base_connection()
+listen(client, socket)
