@@ -10,6 +10,7 @@ def accept_base_connection():
 		socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 		socket.bind((scout_bt_mac_addr, port))
 		socket.listen(backlog)
+		print("Waiting for base to request connection...")
 		client, clientInfo = socket.accept()
 		print("Connection accepted.")
 	except e:
@@ -25,7 +26,6 @@ def listen(client):
 			if data:
 				print(data)
 				client.send(data) # Echo back to client
-				client.send("echooooo") # Echo back to client
 	except:	
 		print("Exception, closing BT socket and attempting to reopen")
 		client.close()
