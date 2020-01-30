@@ -27,11 +27,11 @@ def listen(client, socket):
 				print(data)
 				client.send(data) # Echo back to client
 	except:	
-		print("Exception, closing BT socket and attempting to reopen")
+		print("Exception, closing BT socket and attempting to reopen: ", sys.exc_info()[0])
 		client.close()
 		socket.close()
 		client = accept_base_connection()
-		listen(client)
+		listen(client, socket)
 
 client, socket = accept_base_connection()
 listen(client, socket)
