@@ -1,5 +1,6 @@
 import bluetooth
 import time
+import sys
 
 scout_bt_mac_addr = 'DC:A6:32:3B:BD:A8'
 port = 3

@@ -1,4 +1,5 @@
 import bluetooth 
+import sys
 
 scout_bt_mac_addr = 'DC:A6:32:3B:BD:A8' # The MAC address of a Bluetooth adapter on the server. The server might have multiple Bluetooth adapters. 
 port = 3 
