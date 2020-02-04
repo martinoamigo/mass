@@ -23,7 +23,7 @@ GPIO.output(launch_sol, 1)
 
 # Initialize Pressures
 pressure = 0
-launch_pressure = 120
+launch_pressure = 35
 
 Pressurize = True
 Launch = True
@@ -51,6 +51,15 @@ if(Launch == True):
 	time.sleep(2)
 	GPIO.output(launch_sol, 1)
 	Launch = False
-
+'''
+if(Launch == True):
+	time.sleep(3)
+	GPIO.output(vent_sol, 0)
+	time.sleep(3)
+	GPIO.output(safety_sol, 0)
+	time.sleep(3)
+	GPIO.output(vent_sol, 1)
+	time.sleep(3)
+'''
 GPIO.cleanup()
 
