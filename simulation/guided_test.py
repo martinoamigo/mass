@@ -150,20 +150,45 @@ def arm_and_takeoff(aTargetAltitude):
             break
         time.sleep(1)
 
+
+def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
+    """
+    Move vehicle in direction based on specified velocity vectors.
+    """
+    msg = vehicle.message_factory.set_position_target_local_ned_encode(
+        0,       # time_boot_ms (not used)
+        0, 0,    # target system, target component
+        mavutil.mavlink.MAV_FRAME_LOCAL_NED, # frame
+        0b0000111111000111, # type_mask (only speeds enabled)
+        0, 0, 0, # x, y, z positions (not used)
+        velocity_x, velocity_y, velocity_z, # x, y, z velocity in m/s
+        0, 0, 0, # x, y, z acceleration (not supported yet, ignored in GCS_Mavlink)
+        0, 0)    # yaw, yaw_rate (not supported yet, ignored in GCS_Mavlink)
+
+
+    # send command to vehicle on 1 Hz cycle
+    for x in range(0,duration):
+        vehicle.send_mavlink(msg)
+        time.sleep(1)
         
 print('Create a new mission (for current location)')
-adds_square_mission(vehicle.location.global_frame,50)
+# adds_square_mission(vehicle.location.global_frame,50)
+arm_and_takeoff(10)
+vehicle.mode = 'GUIDED'
+print("moving to the north")
+send_ned_velocity(2, 0, 0, 5)
+# input = input()
 
 
 # From Copter 3.3 you will be able to take off using a mission item. Plane must take off using a mission item (currently).
-arm_and_takeoff(10)
+
 
 print("Starting mission")
 # Reset mission set to first (0) waypoint
-vehicle.commands.next=0
+# vehicle.commands.next=0
 
 # Set mode to AUTO to start mission
-vehicle.mode = VehicleMode("AUTO")
+# vehicle.mode = VehicleMode("AUTO")
 
 
 # Monitor mission. 
@@ -171,17 +196,17 @@ vehicle.mode = VehicleMode("AUTO")
 # Uses distance_to_current_waypoint(), a convenience function for finding the 
 #   distance to the next waypoint.
 
-while True:
-    nextwaypoint=vehicle.commands.next
-    print('Distance to waypoint (%s): %s' % (nextwaypoint, distance_to_current_waypoint()))
+# while True:
+#     nextwaypoint=vehicle.commands.next
+#     print('Distance to waypoint (%s): %s' % (nextwaypoint, distance_to_current_waypoint()))
   
-    if nextwaypoint==3: #Skip to next waypoint
-        print('Skipping to Waypoint 5 when reach waypoint 3')
-        vehicle.commands.next = 5
-    if nextwaypoint==5: #Dummy waypoint - as soon as we reach waypoint 4 this is true and we exit.
-        print("Exit 'standard' mission when start heading to final waypoint (5)")
-        break;
-    time.sleep(1)
+#     if nextwaypoint==3: #Skip to next waypoint
+#         print('Skipping to Waypoint 5 when reach waypoint 3')
+#         vehicle.commands.next = 5
+#     if nextwaypoint==5: #Dummy waypoint - as soon as we reach waypoint 4 this is true and we exit.
+#         print("Exit 'standard' mission when start heading to final waypoint (5)")
+#         break;
+#     time.sleep(1)
 
 print('Return to launch')
 vehicle.mode = VehicleMode("RTL")
