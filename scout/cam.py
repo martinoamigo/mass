@@ -6,15 +6,18 @@ import os
 camera = PiCamera()
 
 def Pic():
-    camera.capture(path + '/' + time)
-    return
+    camera.capture(path + '/' + time + '.jpg')
+    print('Picture saved: ', path + '/' + time + '.jpg')
+
 
 def Vid():
     length = int(input("Length of Video in seconds: "))
-    camera.start_recording(path + '/' + time)
+    camera.start_recording(path + '/' + time + '.h264')
+    print('Shleep......')
     sleep(length)
+    print('AWAKE!!!!!!')
     camera.stop_recording()
-    return
+    print('Video saved: ', path + '/' + time + '.h264')
 
 
 now = datetime.datetime.now() # Current Date and Time
@@ -27,11 +30,15 @@ try:
     os.mkdir(path)
 except OSError:
     print('Creation of directory ', path, ' failed')
+    
+
 
 while True:
-    action = input('Input action letter: /nP for Picture/nV for Video/nExit (or anything else) to leave Camera mode:')
-    if action is 'P':
+    action = input('\nInput action letter: \nP for Picture\nV for Video\nAnything else to leave Camera mode:')
+    now = datetime.datetime.now() # Current Date and Time
+    time = now.strftime('%Hh_%Mm_%Ss')
+    if action.upper() == 'P':
         Pic()
-    elif action is 'V':
+    elif action.upper() == 'V':
         Vid()
     else: break
