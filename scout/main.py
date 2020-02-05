@@ -7,8 +7,8 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.insert(0, parent_dir) 
 # import utils.bluetooth 
 
+# vehicle = None
 connection_string = '127.0.0.1:14550'
-sitl = None
 
 def bluetooth_listener():
 	scout_bt_mac_addr = 'DC:A6:32:3B:BD:A8' # The MAC address of a Bluetooth adapter on the server. The server might have multiple Bluetooth adapters. 
@@ -26,9 +26,10 @@ def flight_controller():
 	vehicle = connect(connection_string, wait_ready=True)
 
 	# Begin mission
-	arm_and_takeoff(vehicle,10)
-	print("Moving north at 3m/s for 5s")
-	send_ned_velocity(vehicle, 3, 0, 0, 5)
+	arm_and_takeoff(vehicle,10) 
+
+	print("Moving forward at 3m/s for 5s")
+	send_ned_velocity(vehicle, 5, 0, 0, 10)
 	print('Return to launch')
 	vehicle.mode = 'RTL'
 
@@ -39,3 +40,13 @@ bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=b
 flight_controller = multiprocessing.Process(name='flight_controller', target=flight_controller)
 bluetooth_listener.start()
 flight_controller.start()
+
+while True:
+	my_input = input("Waiting for input...")
+	if my_input == 'k':
+		print("Kill signal received, landing now...")
+		flight_controller.terminate()
+		vehicle = connect(connection_string, wait_ready=True)
+		vehicle.mode = 'LAND'
+		break
+		
