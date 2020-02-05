@@ -44,6 +44,7 @@ def get_location_metres(original_location, dNorth, dEast):
     newlon = original_location.lon + (dLon * 180/math.pi)
     return LocationGlobal(newlat, newlon,original_location.alt)
 
+
 def get_distance_metres(aLocation1, aLocation2):
     """
     Returns the ground distance in metres between two LocationGlobal objects.
@@ -115,6 +116,7 @@ def adds_square_mission(aLocation, aSize):
     print(" Upload new commands to vehicle")
     cmds.upload()
 
+
 def arm_and_takeoff(aTargetAltitude):
     """
     Arms vehicle and fly to aTargetAltitude.
@@ -126,6 +128,7 @@ def arm_and_takeoff(aTargetAltitude):
         print(" Waiting for vehicle to initialise...")
         time.sleep(1)
 
+        
     print("Arming motors")
     # Copter should arm in GUIDED mode
     vehicle.mode = VehicleMode("GUIDED")
@@ -147,6 +150,7 @@ def arm_and_takeoff(aTargetAltitude):
             break
         time.sleep(1)
 
+
 def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
     """
     Move vehicle in direction based on specified velocity vectors.
@@ -166,19 +170,20 @@ def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
     for x in range(0,duration):
         vehicle.send_mavlink(msg)
         time.sleep(1)
-
         
 print('Create a new mission (for current location)')
 # adds_square_mission(vehicle.location.global_frame,50)
+arm_and_takeoff(10)
+vehicle.mode = 'GUIDED'
+print("moving to the north")
+send_ned_velocity(2, 0, 0, 5)
+# input = input()
 
 
 # From Copter 3.3 you will be able to take off using a mission item. Plane must take off using a mission item (currently).
-arm_and_takeoff(10)
+
 
 print("Starting mission")
-
-print("moving to the north")
-send_ned_velocity(3, 0, 0, 5)
 # Reset mission set to first (0) waypoint
 # vehicle.commands.next=0
 
@@ -203,11 +208,8 @@ send_ned_velocity(3, 0, 0, 5)
 #         break;
 #     time.sleep(1)
 
-# print('Landing...')
-# vehicle.mode = 'LAND'
-
 print('Return to launch')
-vehicle.mode = 'RTL'
+vehicle.mode = VehicleMode("RTL")
 
 
 #Close vehicle object before exiting script

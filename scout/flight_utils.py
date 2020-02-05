@@ -14,14 +14,6 @@ import time
 import math
 from pymavlink import mavutil
 
-connection_string = '127.0.0.1:14550'
-sitl = None
-
-# Connect to the Vehicle
-print('Connecting to vehicle on: %s' % connection_string)
-vehicle = connect(connection_string, wait_ready=True)
-
-
 def get_location_metres(original_location, dNorth, dEast):
     """
     Returns a LocationGlobal object containing the latitude/longitude `dNorth` and `dEast` metres from the 
@@ -56,7 +48,7 @@ def get_distance_metres(aLocation1, aLocation2):
     dlong = aLocation2.lon - aLocation1.lon
     return math.sqrt((dlat*dlat) + (dlong*dlong)) * 1.113195e5
 
-def distance_to_current_waypoint():
+def distance_to_current_waypoint(vehicle):
     """
     Gets distance in metres to the current waypoint. 
     It returns None for the first waypoint (Home location).
@@ -72,7 +64,7 @@ def distance_to_current_waypoint():
     distancetopoint = get_distance_metres(vehicle.location.global_frame, targetWaypointLocation)
     return distancetopoint
 
-def download_mission():
+def download_mission(vehicle):
     """
     Download the current mission from the vehicle.
     """
@@ -80,7 +72,7 @@ def download_mission():
     cmds.download()
     cmds.wait_ready() # wait until download is complete.
 
-def adds_square_mission(aLocation, aSize):
+def adds_square_mission(vehicle, aLocation, aSize):
     """
     Adds a takeoff command and four waypoint commands to the current mission. 
     The waypoints are positioned to form a square of side length 2*aSize around the specified LocationGlobal (aLocation).
@@ -115,7 +107,7 @@ def adds_square_mission(aLocation, aSize):
     print(" Upload new commands to vehicle")
     cmds.upload()
 
-def arm_and_takeoff(aTargetAltitude):
+def arm_and_takeoff(vehicle, aTargetAltitude):
     """
     Arms vehicle and fly to aTargetAltitude.
     """
@@ -147,14 +139,14 @@ def arm_and_takeoff(aTargetAltitude):
             break
         time.sleep(1)
 
-def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
+def send_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
     """
     Move vehicle in direction based on specified velocity vectors.
     """
     msg = vehicle.message_factory.set_position_target_local_ned_encode(
         0,       # time_boot_ms (not used)
         0, 0,    # target system, target component
-        mavutil.mavlink.MAV_FRAME_LOCAL_NED, # frame
+        mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, # frame
         0b0000111111000111, # type_mask (only speeds enabled)
         0, 0, 0, # x, y, z positions (not used)
         velocity_x, velocity_y, velocity_z, # x, y, z velocity in m/s
@@ -168,48 +160,4 @@ def send_ned_velocity(velocity_x, velocity_y, velocity_z, duration):
         time.sleep(1)
 
         
-print('Create a new mission (for current location)')
-# adds_square_mission(vehicle.location.global_frame,50)
 
-
-# From Copter 3.3 you will be able to take off using a mission item. Plane must take off using a mission item (currently).
-arm_and_takeoff(10)
-
-print("Starting mission")
-
-print("moving to the north")
-send_ned_velocity(3, 0, 0, 5)
-# Reset mission set to first (0) waypoint
-# vehicle.commands.next=0
-
-# Set mode to AUTO to start mission
-# vehicle.mode = VehicleMode("AUTO")
-
-
-# Monitor mission. 
-# Demonstrates getting and setting the command number 
-# Uses distance_to_current_waypoint(), a convenience function for finding the 
-#   distance to the next waypoint.
-
-# while True:
-#     nextwaypoint=vehicle.commands.next
-#     print('Distance to waypoint (%s): %s' % (nextwaypoint, distance_to_current_waypoint()))
-  
-#     if nextwaypoint==3: #Skip to next waypoint
-#         print('Skipping to Waypoint 5 when reach waypoint 3')
-#         vehicle.commands.next = 5
-#     if nextwaypoint==5: #Dummy waypoint - as soon as we reach waypoint 4 this is true and we exit.
-#         print("Exit 'standard' mission when start heading to final waypoint (5)")
-#         break;
-#     time.sleep(1)
-
-# print('Landing...')
-# vehicle.mode = 'LAND'
-
-print('Return to launch')
-vehicle.mode = 'RTL'
-
-
-#Close vehicle object before exiting script
-print("Close vehicle object")
-vehicle.close()
