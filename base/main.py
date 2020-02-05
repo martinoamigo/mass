@@ -1,21 +1,11 @@
-import bluetooth
 import time
 import sys
+import utils.bluetooth
 
 scout_bt_mac_addr = 'DC:A6:32:3B:BD:A8'
 port = 3
 
-def connect_to_scout():
-	try:
-		socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-		socket.connect((scout_bt_mac_addr, port))
-		return socket
-	except:
-		time.sleep(2)
-		print("Scout not listening, retrying...")
-		connect_to_scout()
-
-socket = connect_to_scout()
+socket = bluetooth.connect_to_scout()
 
 print("Ready for input...\n")
 while 1:

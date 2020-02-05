@@ -33,7 +33,7 @@ if args.connect:
 ################################################################################################
 
 # Connect to the Vehicle
-print "Connecting"
+print("Connecting")
 vehicle = connect(connection_string, wait_ready=True)
 
 def PX4setMode(mavMode):
@@ -84,15 +84,15 @@ def listener(self, name, home_position):
 
 # wait for a home position lock
 while not home_position_set:
-    print "Waiting for home position..."
+    print("Waiting for home position...")
     time.sleep(1)
 
 # Display basic vehicle state
-print " Type: %s" % vehicle._vehicle_type
-print " Armed: %s" % vehicle.armed
-print " System status: %s" % vehicle.system_status.state
-print " GPS: %s" % vehicle.gps_0
-print " Alt: %s" % vehicle.location.global_relative_frame.alt
+# print " Type: %s" % vehicle._vehicle_type
+# print " Armed: %s" % vehicle.armed
+# print " System status: %s" % vehicle.system_status.state
+# print " GPS: %s" % vehicle.gps_0
+# print " Alt: %s" % vehicle.location.global_relative_frame.alt
 
 # Change to AUTO mode
 PX4setMode(MAV_MODE_AUTO)
@@ -113,9 +113,6 @@ cmds.clear()
 wp = get_location_offset_meters(home, 0, 0, 0)
 cmd = Command(0,0,0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, mavutil.mavlink.MAV_CMD_NAV_LAND, 0, 1, 0, 0, 0, 0, wp.lat, wp.lon, wp.alt)
 cmds.add(cmd)
-
-else:
-    print("ERROR: Invalid flight path shape.")
 
 # Upload mission
 cmds.upload()
