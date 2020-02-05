@@ -6,8 +6,8 @@ GPIO.setwarnings(False)
 # Pinouts for Relay Connectors
 comp       = 16
 safety_sol = 13
-vent_sol   = 11
-launch_sol = 15
+vent_sol   = 15
+launch_sol = 11
 
 # Set Pins
 GPIO.setup(comp, GPIO.OUT)
@@ -23,7 +23,7 @@ GPIO.output(launch_sol, 1)
 
 # Initialize Pressures
 pressure = 0
-launch_pressure = 35
+launch_pressure = 50
 
 Pressurize = True
 Launch = True
