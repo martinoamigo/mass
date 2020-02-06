@@ -32,24 +32,24 @@ while 1:
 
   if count_in_frame > 0:
     for i in range (0, count_in_frame):
-    #   print('[BLOCK: SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (blocks[i].m_signature, blocks[i].m_x, blocks[i].m_y, blocks[i].m_width, blocks[i].m_height))
+        #   print('[BLOCK: SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (blocks[i].m_signature, blocks[i].m_x, blocks[i].m_y, blocks[i].m_width, blocks[i].m_height))
         target_block = blocks[i] # temporarily choose the last block in the frame as the target
 
     if target_block.m_x < lower_x:
-    # brightness = map(lower_x - target_block.m_x, 0, lower_x, 255, 0)
-    print("Left")
+        # brightness = map(lower_x - target_block.m_x, 0, lower_x, 255, 0)
+        print("Left")
 
     if target_block.m_x > upper_x:
-    # brightness = map(target_block.m_x - upper_x, 0, upper_x, 255, 100)
-    print("Right")
+        # brightness = map(target_block.m_x - upper_x, 0, upper_x, 255, 100)
+        print("Right")
 
     if target_block.m_y < upper_y:
-    # brightness = map(upper_y - target_block.m_y, 0, upper_y, 255, 100)
-    print("Up")
+        # brightness = map(upper_y - target_block.m_y, 0, upper_y, 255, 100)
+        print("Up")
 
     if target_block.m_y > lower_y:
-    # brightness = map(target_block.m_y - lower_y, 0, lower_y, 255, 100)
-    print("Down")
+        # brightness = map(target_block.m_y - lower_y, 0, lower_y, 255, 100)
+        print("Down")
 
     if (target_block.m_x < upper_x and target_block.m_y > upper_y and target_block.m_x > lower_x and target_block.m_y < lower_y:
     print("Centered, lower.")
