@@ -2,6 +2,7 @@ from __future__ import print_function
 import pixy 
 from ctypes import *
 from pixy import *
+import time
 
 pixy.init()
 pixy.change_prog("color_connected_components")
@@ -51,8 +52,8 @@ while 1:
         # brightness = map(target_block.m_y - lower_y, 0, lower_y, 255, 100)
         print("Down")
 
-    if (target_block.m_x < upper_x and target_block.m_y > upper_y and target_block.m_x > lower_x and target_block.m_y < lower_y:
-    print("Centered, lower.")
-    time.sleep(2)
+    if target_block.m_x < upper_x and target_block.m_y > upper_y and target_block.m_x > lower_x and target_block.m_y < lower_y:
+    	print("Centered, lower.")
+    time.sleep(1)
     
   
