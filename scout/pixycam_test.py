@@ -7,7 +7,7 @@ import time
 pixy.init()
 pixy.change_prog("color_connected_components")
 
-radius = 10
+radius = 30
 x_center = 158    #center of cam in x dir
 y_center = 104    #center of cam in y dir
 
