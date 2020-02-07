@@ -3,6 +3,19 @@ import time
 import Adafruit_MCP3008
 import Adafruit_GPIO.SPI as GPIOp
 import numpy as np
+import os
+import datetime
+
+now = datetime.datetime.now() # Current Date and Time
+date = now.strftime('%Y_%m_%d')
+time = now.strftime('%Hh_%Mm_%Ss')
+path = 'Desktop/Pneumatic_Logs/' + date
+try:
+    os.mkdir(path)
+except OSError:
+    print('Creation of directory ', path, ' failed')
+file = open(path + str(now) + ".txt", "a")
+file.write("P(psi), t(s),\n")
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
@@ -37,14 +50,12 @@ GPIO.output(vent_sol,1)
 GPIO.output(launch_sol,1)
 
 #initialize
-file = open("launchpress.txt", "a")
-file.write("New Launch Values")
 charge  = True
 tm = 0
 while charge == True:
 	value = mcp.read_adc(0)
 	tm = tm + 0.2
-	file.write("P: " + str(value/10.23 - 15.4) + "     T: " + str(tm) + "s\n")
+	file.write(str(value/10.23 - 15.4) + ", " + str(tm) + ",\n")
 	print('| %5.3f Psi |' %(value/10.23 - 15.4))
 	print("______________________")
 	time.sleep(.20)
