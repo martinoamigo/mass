@@ -43,7 +43,7 @@ def phase1():
             target_block = None
             # choose the most centered block in the frame
             for i in range (0, objects_seen):
-                if blocks[i].m_signature == 0:
+                if blocks[i].m_signature == 1:
                     #   print('[BLOCK: SIG=%d X=%3d Y=%3d WIDTH=%3d HEIGHT=%3d]' % (blocks[i].m_signature, blocks[i].m_x, blocks[i].m_y, blocks[i].m_width, blocks[i].m_height))
                     distance_to_center = math.sqrt((blocks[i].m_x - x_center)**2 + (blocks[i].m_y - y_center)**2)  
                     if distance_to_center < lowest_distance_to_center:
@@ -51,7 +51,7 @@ def phase1():
                         target_block = blocks[i] 
             
             if target_block:
-                movement_vector = (base_center_target[0] - target_block.m_x, base_center_target[1] - target_block.m_y)
+                movement_vector = (target_block.m_x - base_center_target[0], base_center_target[1] - target_block.m_y)
                 print(movement_vector)
             # if target_block.m_x < lower_x:
             #     # brightness = map(lower_x - target_block.m_x, 0, lower_x, 255, 0)
@@ -71,3 +71,4 @@ def phase1():
             time.sleep(1)
     
   
+phase1()
