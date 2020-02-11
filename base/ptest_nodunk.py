@@ -3,7 +3,23 @@ import time
 import Adafruit_MCP3008
 import Adafruit_GPIO.SPI as GPIOp
 import numpy as np
+<<<<<<< HEAD
 from multiprocessing import Process, Value, Array
+=======
+import os
+import datetime
+
+now = datetime.datetime.now() # Current Date and Time
+date = now.strftime('%Y_%m_%d')
+time = now.strftime('%Hh_%Mm_%Ss')
+path = 'Desktop/Pneumatic_Logs/' + date
+try:
+    os.mkdir(path)
+except OSError:
+    print('Creation of directory ', path, ' failed')
+file = open(path + str(now) + ".txt", "a")
+file.write("P(psi), t(s),\n")
+>>>>>>> 2dc606bd07f916a1f4b2e140897637d63c14d7ce
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
@@ -36,6 +52,7 @@ GPIO.output(safety_sol,1)
 GPIO.output(vent_sol,1)
 GPIO.output(launch_sol,1)
 
+<<<<<<< HEAD
 def read_trans(value):
     start = time.time()
     j = 0
@@ -51,6 +68,9 @@ def read_trans(value):
 # initialize
 file = open("launchpress_2.txt", "a")
 file.write("New Launch Values\n")
+=======
+#initialize
+>>>>>>> 2dc606bd07f916a1f4b2e140897637d63c14d7ce
 charge  = True
 value = Array('f', range(3))
 
@@ -59,6 +79,7 @@ read_trans_in_background.start()
 
 # charge compressor
 while charge == True:
+<<<<<<< HEAD
     time.sleep(.20)
     GPIO.output(comp, 0)
     if value[0] >= FP:
@@ -66,6 +87,18 @@ while charge == True:
     time.sleep(.25)
     
 # Launch sequence
+=======
+	value = mcp.read_adc(0)
+	tm = tm + 0.2
+	file.write(str(value/10.23 - 15.4) + ", " + str(tm) + ",\n")
+	print('| %5.3f Psi |' %(value/10.23 - 15.4))
+	print("______________________")
+	time.sleep(.20)
+	GPIO.output(comp, 0)
+	if value >= FP:
+		charge = False
+	time.sleep(.25)
+>>>>>>> 2dc606bd07f916a1f4b2e140897637d63c14d7ce
 GPIO.output(comp, 1)
 time.sleep(4)
 GPIO.output(vent_sol, 0)
