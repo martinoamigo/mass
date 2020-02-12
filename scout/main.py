@@ -1,5 +1,5 @@
 import os,sys,inspect
-from flight_utils import *
+from utils.flight_utils import *
 import sys
 import multiprocessing
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
