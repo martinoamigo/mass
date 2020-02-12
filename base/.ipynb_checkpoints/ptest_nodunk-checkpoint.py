@@ -3,7 +3,12 @@ import time
 import Adafruit_MCP3008
 import Adafruit_GPIO.SPI as GPIOp
 import numpy as np
+# import matplotlib.pyplot as plt
+
 from multiprocessing import Process, Value, Array
+
+import os
+import datetime
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
@@ -18,7 +23,7 @@ LP = input("Enter Launch Pressure: ")
 LP = float(LP) + 15.4
 FP  = LP * 10.23 # fake pressure
 if LP  >= 75: 
-	exit()
+    exit()
 
 SPI_PORT = 0
 SPI_DEVICE = 0
@@ -36,38 +41,67 @@ GPIO.output(safety_sol,1)
 GPIO.output(vent_sol,1)
 GPIO.output(launch_sol,1)
 
-def read_trans(value):
+def read_trans(value, state):
     start = time.time()
     j = 0
+    x = []
+    y = []
     while True:
-        time.sleep(.02)
+        # read pressures
         for i in range(3):
             value[i] = mcp.read_adc(i)
-        file.write('| {0:.4f} | {1:.4f} | {2:.4f} | time: {3:.4f}'.format(value[0]/10.23 - 15.4, value[1]/10.23 - 15.4, value[2]/10.23 - 15.4, time.time() - start))
+        
+        # save pressures to file
+        file.write('| {0:.4f} | {1:.4f} | {2:.4f} | time: {3:.4f}\n'.format(value[0]/10.23 - 15.4, 
+                                                                            value[1]/10.23 - 15.4, 
+                                                                            value[2]/10.23 - 15.4, time.time() - start))
+        # add points  to graph
+        x.append(time.time() - start)
+        y.append(value[0]/10.23 - 15.4)
+        
+        #print values every 10 data points
         if j % 10 == 0:
-            print('| {0:.4f} | {1:.4f} | {2:.4f} | time: {3:.4f}'.format(value[0]/10.23 - 15.4, value[1]/10.23 - 15.4, value[2]/10.23 - 15.4, time.time() - start))
+            print('| {0:.4f} | {1:.4f} | {2:.4f} | time: {3:.4f}'.format(value[0]/10.23 - 15.4, 
+                                                                         value[1]/10.23 - 15.4, 
+                                                                         value[2]/10.23 - 15.4, time.time() - start))
+        #shleep and increment
+        time.sleep(.02)
         j += 1
+             
+        # if launch is done, create graph and exit
+        if state.value == 1:
+#             fig=plt.figure()
+#             ax=fig.add_axes([0,0,1,1])
+#             ax.scatter(x, y, color='r')
+#             ax.set_xlabel('time(s)')
+#             ax.set_ylabel('pressure(psi)')
+#             ax.set_title('plot bitch')
+#             plt.show()
+            return
+                  
         
 # initialize
-file = open("launchpress_2.txt", "a")
+file = open("launchpress.txt", "a")
 file.write("New Launch Values\n")
 charge  = True
-value = Array('f', range(3))
+pressures = Array('f', range(3))
+state = Value('i', 0)
 
-read_trans_in_background = Process(target=read_trans, args=(value,))
+read_trans_in_background = Process(target=read_trans, args=(pressures,state))
 read_trans_in_background.start()
 
 # charge compressor
+# time.sleep(2)
 while charge == True:
     time.sleep(.20)
     GPIO.output(comp, 0)
-    if value[0] >= FP:
+    if pressures[0] >= FP:
         charge = False
     time.sleep(.25)
     
 # Launch sequence
 GPIO.output(comp, 1)
-time.sleep(4)
+time.sleep(3)
 GPIO.output(vent_sol, 0)
 time.sleep(1)
 GPIO.output(launch_sol,0)
@@ -77,7 +111,7 @@ time.sleep(3)
 GPIO.output(safety_sol, 1)
 time.sleep(2)
 GPIO.output(vent_sol, 1)
-time.sleep(4)
+time.sleep(2)
 GPIO.output(launch_sol, 1)
 LP = 0
 
@@ -85,4 +119,6 @@ LP = 0
 
 file.close()
 GPIO.cleanup()
-read_trans_in_background.terminate()
+state.value = 1 # we done
+print("done")
+# read_trans_in_background.terminate()

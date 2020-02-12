@@ -18,6 +18,9 @@ comp       = 16
 safety_sol = 11
 vent_sol   = 13
 launch_sol = 15
+sol_act1 = 31
+sol_act2 = 33
+
 
 LP = input("Enter Launch Pressure: ")
 LP = float(LP) + 15.4
@@ -34,12 +37,17 @@ GPIO.setup(comp, GPIO.OUT)
 GPIO.setup(safety_sol, GPIO.OUT)
 GPIO.setup(vent_sol, GPIO.OUT)
 GPIO.setup(launch_sol, GPIO.OUT)
+GPIO.setup(sol_act1, GPIO.OUT)
+GPIO.setup(sol_act2, GPIO.OUT)
 
-# Clear Pins
+
+# Initialize  Pins
 GPIO.output(comp, 1)
 GPIO.output(safety_sol,1)
 GPIO.output(vent_sol,1)
 GPIO.output(launch_sol,1)
+GPIO.output(sol_act1, 1)
+GPIO.output(sol_act2, 1)
 
 def read_trans(value, state):
     start = time.time()
@@ -87,6 +95,20 @@ charge  = True
 pressures = Array('f', range(3))
 state = Value('i', 0)
 
+print("Starting Launch Sequence in: 3")
+time.sleep(1)
+print("2 ")
+time.sleep(1)
+print("1 ")
+time.sleep(1)
+
+print("Undocking ...")
+time.sleep(1)
+GPIO.output(sol_act1, 0)
+GPIO.output(sol_act2, 0)
+time.sleep(1)
+
+print("Pressurizing ...")
 read_trans_in_background = Process(target=read_trans, args=(pressures,state))
 read_trans_in_background.start()
 
