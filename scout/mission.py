@@ -34,7 +34,7 @@ if args.connect:
 ################################################################################################
 
 # Connect to the Vehicle
-print "Connecting"
+print("Connecting")
 vehicle = connect(connection_string, wait_ready=True)
 
 def PX4setMode(mavMode):

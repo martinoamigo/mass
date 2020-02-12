@@ -8,7 +8,7 @@ sys.path.insert(0, parent_dir)
 # import utils.bluetooth 
 
 # vehicle = None
-connection_string = '127.0.0.1:14550'
+connection_string = '/dev/serial0'
 
 def bluetooth_listener():
 	scout_bt_mac_addr = 'DC:A6:32:3B:BD:A8' # The MAC address of a Bluetooth adapter on the server. The server might have multiple Bluetooth adapters. 
@@ -23,7 +23,7 @@ def bluetooth_listener():
 def flight_controller():
 	# Connect to the Vehicle
 	print('Connecting to vehicle on: %s' % connection_string)
-	vehicle = connect(connection_string, wait_ready=True)
+	vehicle = connect(connection_string, wait_ready=True, baud=921600)
 
 	# Begin mission
 	arm_and_takeoff(vehicle,10) 
