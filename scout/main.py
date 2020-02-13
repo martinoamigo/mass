@@ -8,16 +8,16 @@ from utils.flight_utils import *
 connection_string = '/dev/serial0'
 
 def bluetooth_listener():
-	scout_bt_mac_addr = 'DC:A6:32:3B:BD:A8' # The MAC address of a Bluetooth adapter on the server. The server might have multiple Bluetooth adapters. 
-	port = 3 
-	backlog = 1
-	size = 1024
+	# Connect to bluetooth indefinitely
+	while 1:
+		base = bluetooth.Connection()
+		base.connect()
+		base.listen()
 
-	# Connect to bluetooth
-	client, socket = bluetooth.accept_base_connection()
-	bluetooth.listen(client, socket)
+# def message_handler():
 
-def task_handler():
+
+def start_mission():
 	# Connect to the Vehicle
 	print('Connecting to vehicle on: %s' % connection_string)
 	vehicle = connect(connection_string, wait_ready=True, baud=921600)
@@ -34,9 +34,9 @@ def task_handler():
 	vehicle.close()
 
 bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=bluetooth_listener)
-flight_controller = multiprocessing.Process(name='flight_controller', target=flight_controller)
 bluetooth_listener.start()
-flight_controller.start()
+# flight_controller = multiprocessing.Process(name='flight_controller', target=flight_controller)
+# flight_controller.start()
 
 while True:
 	my_input = input("Waiting for input...")

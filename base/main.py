@@ -6,7 +6,7 @@ import utils.bluetooth
 scout = bluetooth.Connection()
 scout.connect()
 
-#TODO hanle disconnect error
+#TODO handle disconnect error
 
 print("Input message for scout (or 'exit')...\n")
 while 1:
