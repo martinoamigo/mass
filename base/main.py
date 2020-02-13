@@ -2,19 +2,18 @@ import time
 import sys
 import utils.bluetooth
 
-scout_bt_mac_addr = 'DC:A6:32:3B:BD:A8'
-port = 3
+#connect to scout
+scout = bluetooth.Connection()
+scout.connect()
 
-socket = bluetooth.connect_to_scout()
+#TODO hanle disconnect error
 
-print("Ready for input...\n")
+print("Input message for scout (or 'exit')...\n")
 while 1:
-	text = input()
-	if text == "quit":
+	message = input()
+	if message == "exit":
 		break
-	socket.send(text)
-	data = socket.recv(1024)
-	if data:
-		print(data)
+	scout.send_message(message)
+self.socket.close()
 
-socket.close()
+
