@@ -1,7 +1,7 @@
-import os,sys,inspect
+import os,inspect
 import sys
 import multiprocessing
-import utils.bluetooth 
+import utils.bluetooth as bluetooth 
 from utils.flight_utils import *
 
 # vehicle = None
