@@ -1,7 +1,7 @@
 from __future__ import print_function
-import pixy 
+import utils.pixy 
 from ctypes import *
-from pixy import *
+from utils.pixy import *
 import time
 import math
 

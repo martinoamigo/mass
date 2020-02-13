@@ -1,0 +1,5 @@
+# Ignore the Mavlink dir
+MyCopter/
+
+# .pyc files don't matter
+*.pyc

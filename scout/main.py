@@ -1,7 +1,7 @@
 import os,sys,inspect
 import sys
 import multiprocessing
-# import utils.bluetooth 
+import utils.bluetooth 
 from utils.flight_utils import *
 
 # vehicle = None
@@ -14,10 +14,10 @@ def bluetooth_listener():
 	size = 1024
 
 	# Connect to bluetooth
-	# client, socket = bluetooth.accept_base_connection()
-	# bluetooth.listen(client, socket)
+	client, socket = bluetooth.accept_base_connection()
+	bluetooth.listen(client, socket)
 
-def flight_controller():
+def task_handler():
 	# Connect to the Vehicle
 	print('Connecting to vehicle on: %s' % connection_string)
 	vehicle = connect(connection_string, wait_ready=True, baud=921600)
@@ -26,7 +26,7 @@ def flight_controller():
 	arm_and_takeoff(vehicle,10) 
 
 	print("Moving forward at 3m/s for 5s")
-	send_ned_velocity(vehicle, 5, 0, 0, 10)
+	# send_ned_velocity(vehicle, 5, 0, 0, 10)
 	print('Return to launch')
 	vehicle.mode = 'RTL'
 
