@@ -14,8 +14,20 @@ def bluetooth_listener():
 		base.connect()
 		base.listen()
 
-# def message_handler():
-
+def message_handler(message):
+	if message == "mission":
+		print("Mission signal received.")
+		flight_controller = multiprocessing.Process(name='flight_controller', target=start_mission)
+		flight_controller.start()
+		return
+	elif message == "land":
+		print("Land signal received.")
+		flight_controller.terminate()
+		vehicle = connect(connection_string, wait_ready=True)
+		vehicle.mode = 'LAND'
+		return
+	elif message == "kill":
+		print("Kill signal received")
 
 def start_mission():
 	# Connect to the Vehicle
@@ -37,13 +49,4 @@ bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=b
 bluetooth_listener.start()
 # flight_controller = multiprocessing.Process(name='flight_controller', target=flight_controller)
 # flight_controller.start()
-
-while True:
-	my_input = input("Waiting for input...")
-	if my_input == 'k':
-		print("Kill signal received, landing now...")
-		flight_controller.terminate()
-		vehicle = connect(connection_string, wait_ready=True)
-		vehicle.mode = 'LAND'
-		break
 		

@@ -24,18 +24,12 @@ GPIO.output(sol_act1, 1)
 GPIO.output(sol_act2, 1)
 GPIO.output(lin_act1, 1)
 GPIO.output(lin_act2, 1)
-#inout
+
 GPIO.output(sol_act1, 0)
 GPIO.output(sol_act2, 0)
 GPIO.output(lin_act1, 1)
 GPIO.output(lin_act2, 0)
-time.sleep(10)
-GPIO.output(lin_act1, 0)
-GPIO.output(lin_act2, 1)
-GPIO.output(sol_act1, 1)
-GPIO.output(sol_act2, 1)
-time.sleep(10)
-
+time.sleep(4)
 
 
 GPIO.cleanup()

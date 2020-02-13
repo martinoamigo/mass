@@ -1,6 +1,6 @@
 import time
 import sys
-import utils.bluetooth
+import utils.bluetooth as bluetooth
 
 #connect to scout
 scout = bluetooth.Connection()
@@ -13,7 +13,13 @@ while 1:
 	message = input()
 	if message == "exit":
 		break
-	scout.send_message(message)
+	response = scout.send_message(message)
+	if not response:
+		# Reconnect
+		del scout
+		scout = bluetooth.Connection()
+		scout.connect()
+
 self.socket.close()
 
 
