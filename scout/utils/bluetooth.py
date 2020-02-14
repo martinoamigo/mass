@@ -11,14 +11,16 @@ class Connection:
 		self.client = None
 
 	def connect(self):
+		self.socket.bind((scout_bt_mac_addr, port))
+		self.socket.listen(backlog)
 		try:
-			self.socket.bind((scout_bt_mac_addr, port))
-			self.socket.listen(backlog)
 			print("Waiting for base to request connection...")
 			self.client, clientInfo = socket.accept()
 			print("Connection accepted.")
 		except:
 			print("[ERROR] accepting base connection({}), retrying...".format(sys.exc_info()[0]))
+			self.client.close()
+			self.socket.close()
 			self.connect()
 
 	def listen(self):

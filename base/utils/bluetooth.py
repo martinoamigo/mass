@@ -7,15 +7,15 @@ port = 3
 
 class Connection:
 	def __init__(self):
-		self.socket = None
+		self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 
 	def connect(self):
-		try:
-			self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-			self.socket.connect((scout_bt_mac_addr, port))
-		except:
-			print("Could not connect, retrying...")
-			self.connect()
+		# try:
+		self.socket.connect((scout_bt_mac_addr, port))
+		# except:
+			# time.sleep(3)
+			# print("Could not connect, retrying...")
+			# self.connect()
 
 	def send_message(self, message):
 		try:	
