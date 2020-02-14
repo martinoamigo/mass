@@ -32,9 +32,10 @@ class Connection:
 			while 1:
 				data = self.client.recv(size)
 				if data:
-					print(data)
 					self.client.send(data) # Echo back to client
+					return data
 		except:	
 			print("[ERROR]: Closed BT socket({})".format(sys.exc_info()[0]))
 			self.client.close()
 			self.socket.close()
+			return False
