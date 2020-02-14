@@ -20,18 +20,18 @@ def bluetooth_listener():
 				message_handler(message)
 
 def message_handler(message):
-	if message == "mission":
+	if message == b'mission':
 		print("Mission signal received.")
 		flight_controller = multiprocessing.Process(name='flight_controller', target=start_mission)
 		flight_controller.start()
 		return
-	elif message == "land":
+	elif message == b'land':
 		print("Land signal received.")
 		flight_controller.terminate()
 		vehicle = connect(connection_string, wait_ready=True)
 		vehicle.mode = 'LAND'
 		return
-	elif message == "kill":
+	elif message == b'kill':
 		print("Kill signal received")
 	else:
 		print("Message not recognized.")
