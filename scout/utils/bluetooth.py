@@ -1,4 +1,6 @@
 import bluetooth
+import sys
+import time
 
 scout_bt_mac_addr = 'DC:A6:32:3B:BD:A8' # The MAC address of a Bluetooth adapter on the server. The server might have multiple Bluetooth adapters. 
 port = 3 
@@ -18,9 +20,10 @@ class Connection:
 			self.client, clientInfo = socket.accept()
 			print("Connection accepted.")
 		except:
-			print("[ERROR] accepting base connection({}), retrying...".format(sys.exc_info()[0]))
+			print("[ERROR]: Not able to connect to client({}), retrying...".format(sys.exc_info()[0]))
+			time.sleep(3)
 			self.client.close()
-			self.socket.close()
+            self.socket.close()
 			self.connect()
 
 	def listen(self):
