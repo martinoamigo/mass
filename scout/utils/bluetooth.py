@@ -17,7 +17,7 @@ class Connection:
 		self.socket.listen(backlog)
 		try:
 			print("Waiting for base to request connection...")
-			self.client, clientInfo = socket.accept()
+			self.client, clientInfo = self.socket.accept()
 			print("Connection accepted.")
 		except:
 			print("[ERROR]: Not able to connect to client({}), retrying...".format(sys.exc_info()[0]))
