@@ -23,7 +23,7 @@ class Connection:
 			print("[ERROR]: Not able to connect to client({}), retrying...".format(sys.exc_info()[0]))
 			time.sleep(3)
 			self.client.close()
-            self.socket.close()
+			self.socket.close()
 			self.connect()
 
 	def listen(self):
