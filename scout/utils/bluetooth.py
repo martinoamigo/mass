@@ -50,6 +50,7 @@ class Connection:
 			while 1:
 				print("l inside")
 				data = self.client.recv(size)
+				print(data)
 				if data:
 					return data
 		except:	
