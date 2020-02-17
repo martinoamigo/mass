@@ -1,6 +1,7 @@
 import time
 import sys
 import utils.bluetooth as bluetooth
+import multiprocessing
 
 #connect to scout
 scout = bluetooth.Connection()
@@ -16,7 +17,10 @@ def bluetooth_listener(scout):
 			else:
 				print(message)
 
-print("Input message for scout (or 'exit')...\n")
+bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=bluetooth_listener, args=(scout,))
+bluetooth_listener.start()
+
+# print("Input message for scout (or 'exit')...\n")
 while 1:
 	message = input()
 	if message == "exit":
