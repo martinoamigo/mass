@@ -44,5 +44,5 @@ class Connection:
 
 	def send(self, message):
 		print(message)
-		log.info(message)
+		log.log.info(message)
 		self.client.send(message)
