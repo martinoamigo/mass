@@ -22,8 +22,8 @@ class Connection:
 		except:
 			print("[ERROR]: Not able to connect to client({}), retrying...".format(sys.exc_info()[0]))
 			time.sleep(3)
-			self.client.close()
-			self.socket.close()
+			# self.client.close()
+			# self.socket.close()
 			self.connect()
 
 	def listen(self):
@@ -31,7 +31,6 @@ class Connection:
 			while 1:
 				data = self.client.recv(size)
 				if data:
-					self.client.send(data) # Echo back to client
 					return data
 		except:	
 			print("[ERROR]: Closed BT socket({})".format(sys.exc_info()[0]))

@@ -6,7 +6,6 @@ logging.basicConfig(
     format=("%(asctime)s:%(levelname)s:%(message)s"),
     level=logging.INFO
 )
-  
 
 class Log:
   def __init__(self):

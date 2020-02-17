@@ -30,21 +30,25 @@ def message_handler(message):
 		vehicle = connect(connection_string, wait_ready=True)
 		vehicle.mode = 'LAND'
 		return
+	elif message == b'disarm':
+		base.send("Disarming...")
 	elif message == b'kill':
 		base.send("Kill signal received")
+		return
 	else:
 		base.send("Message not recognized.")
+		return
 
 def start_mission():
 	# Connect to the Vehicle
-	print('Connecting to vehicle on: %s' % connection_string)
+	base.send('Connecting to vehicle on: %s' % connection_string)
 	vehicle = connect(connection_string, wait_ready=True, baud=921600)
 
 	# Begin mission
-	arm_and_takeoff(vehicle,5) 
+	arm_and_takeoff(base,vehicle,5) 
 
 	#print("Moving forward at 3m/s for 5s")
-	# switch to GUIDED or 
+	# switch to GUIDED or GUIDEDNOGPS
 	# send_ned_velocity(vehicle, 5, 0, 0, 10)
 	print('Return to launch')
 	vehicle.mode = 'RTL'
