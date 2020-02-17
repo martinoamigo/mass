@@ -20,7 +20,6 @@ def bluetooth_listener(scout):
 bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=bluetooth_listener, args=(scout,))
 bluetooth_listener.start()
 
-# print("Input message for scout (or 'exit')...\n")
 while 1:
 	message = input()
 	if message == "exit":

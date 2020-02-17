@@ -12,9 +12,9 @@ class Connection:
 	def connect(self):
 		try:
 			bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-			print("Connecting...")
+			print("Pairing...")
 			self.socket.connect((scout_bt_mac_addr, port))
-			print("Connected.")
+			print("Paired.")
 		except:
 			time.sleep(3)
 			print("Could not connect, retrying...")
