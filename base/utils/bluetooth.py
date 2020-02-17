@@ -8,17 +8,16 @@ port = 3
 
 class Connection:
 	def __init__(self):
-		self.socket = None
+		self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 
 	def connect(self):
-		# try:
-		self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-		print("Connecting...")
-		self.socket.connect((scout_bt_mac_addr, port))
-		print("Connected.")
-		# except:
-		# 	time.sleep(3)
-		# 	self.connect()
+		try:
+			print("Connecting...")
+			self.socket.connect((scout_bt_mac_addr, port))
+			print("Connected.")
+		except:
+			time.sleep(3)
+			self.connect()
 	
 	def listen(self):
 		try:	

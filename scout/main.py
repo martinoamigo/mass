@@ -3,6 +3,7 @@ import sys
 import multiprocessing
 import utils.bluetooth as bluetooth 
 from utils.flight_utils import *
+import time
 
 connection_string = '/dev/serial0'
 global base
@@ -12,7 +13,6 @@ def bluetooth_listener(base):
 		conn = base.connect()
 		if conn:
 			while 1:
-				print("listening... outside")
 				message = base.listen()
 				if not message:
 					break # reconnect
