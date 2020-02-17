@@ -12,6 +12,7 @@ def bluetooth_listener(base):
 		conn = base.connect()
 		if conn:
 			while 1:
+				print("listening... outside")
 				message = base.listen()
 				if not message:
 					break # reconnect
