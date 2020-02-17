@@ -7,6 +7,15 @@ port = 3
 backlog = 1
 size = 1024
 
+def log_setup():
+    logging.basicConfig(
+        filename="masterCatalog.log",
+        filemode="a",
+        format=("%(asctime)s:%(levelname)s:%(message)s"),
+        level=logging.INFO)
+    global log
+    log = logging.getLogger()
+
 log_setup()
 
 class Connection:
@@ -51,12 +60,3 @@ class Connection:
 	def send(self, message):
 		print(message)
 		self.client.send(message)
-
-def log_setup():
-    logging.basicConfig(
-        filename="masterCatalog.log",
-        filemode="a",
-        format=("%(asctime)s:%(levelname)s:%(message)s"),
-        level=logging.INFO)
-    global log
-    log = logging.getLogger()
