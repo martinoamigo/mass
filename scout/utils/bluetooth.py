@@ -38,3 +38,7 @@ class Connection:
 			self.client.close()
 			self.socket.close()
 			return False
+
+	def send(self, message):
+		print(message)
+		self.client.send(message)
