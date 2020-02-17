@@ -1,11 +1,14 @@
 import bluetooth
 import sys
 import time
+import utils.logfn as logfn
 
 scout_bt_mac_addr = 'DC:A6:32:3B:BD:A8' # The MAC address of a Bluetooth adapter on the server. The server might have multiple Bluetooth adapters. 
 port = 3 
 backlog = 1
 size = 1024
+
+log = logfn.Log()
 
 class Connection:
 	def __init__(self):
@@ -41,4 +44,5 @@ class Connection:
 
 	def send(self, message):
 		print(message)
+		log.info(message)
 		self.client.send(message)
