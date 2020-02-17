@@ -12,22 +12,24 @@ log = logfn.Log()
 
 class Connection:
 	def __init__(self):
-		self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+		self.socket = None
 		self.client = None
 
 	def connect(self):
+		self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 		self.socket.bind((scout_bt_mac_addr, port))
 		self.socket.listen(backlog)
 		try:
 			print("Waiting for base to request connection...")
 			self.client, clientInfo = self.socket.accept()
 			print("Connection accepted.")
+			return True
 		except:
-			print("[ERROR]: Not able to connect to client({}), retrying...".format(sys.exc_info()[0]))
+			print("[ERROR]: Not able to connect to client({})".format(sys.exc_info()[0]))
 			time.sleep(3)
-			# self.client.close()
-			# self.socket.close()
-			self.connect()
+			self.client.close()
+			self.socket.close()
+			return False
 
 	def listen(self):
 		try:	

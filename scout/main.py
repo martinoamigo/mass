@@ -5,18 +5,18 @@ import utils.bluetooth as bluetooth
 from utils.flight_utils import *
 
 connection_string = '/dev/serial0'
-base = bluetooth.Connection()
+global base
 
 def bluetooth_listener(base):
-	# Connect to bluetooth indefinitely
 	while 1:
-		base.connect()
-		while 1:
-			message = base.listen()
-			if not message:
-				break # Reconnect
-			else:
-				message_handler(message)
+		conn = base.connect()
+		if conn:
+			while 1:
+				message = base.listen()
+				if not message:
+					return # reconnect
+				else:
+					message_handler(message)
 
 def message_handler(message):
 	if message == b'mission':
@@ -56,8 +56,7 @@ def start_mission():
 	print("Close vehicle object")
 	vehicle.close()
 
+base = bluetooth.Connection()
 bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=bluetooth_listener, args=(base,))
 bluetooth_listener.start()
-
-# start_mission()
 		
