@@ -40,23 +40,22 @@ class Connection:
 			msg = "Not able to connect to client({})".format(sys.exc_info()[0])
 			print(msg)
 			log.info(msg)
-			time.sleep(3)
 			self.client.close()
 			self.socket.close()
+			time.sleep(5)
 			return False
 
 	def listen(self):
 		try:	
 			while 1:
-				print("l inside")
 				data = self.client.recv(size)
-				print(data)
 				if data:
 					return data
 		except:	
 			print("[ERROR]: Closed BT socket({})".format(sys.exc_info()[0]))
 			self.client.close()
 			self.socket.close()
+			time.sleep(5)
 			return False
 
 	def send(self, message):
