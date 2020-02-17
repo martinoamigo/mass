@@ -20,11 +20,11 @@ log_setup()
 
 class Connection:
 	def __init__(self):
-		self.socket = None
+		self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 		self.client = None
 
 	def connect(self):
-		self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+		# self.socket = 
 		self.socket.bind((scout_bt_mac_addr, port))
 		self.socket.listen(backlog)
 		try:
