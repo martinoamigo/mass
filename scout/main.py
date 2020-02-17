@@ -14,7 +14,7 @@ def bluetooth_listener(base):
 			while 1:
 				message = base.listen()
 				if not message:
-					return # reconnect
+					break # reconnect
 				else:
 					message_handler(message)
 
