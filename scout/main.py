@@ -4,13 +4,12 @@ import multiprocessing
 import utils.bluetooth as bluetooth 
 from utils.flight_utils import *
 
-# vehicle = None
 connection_string = '/dev/serial0'
+base = bluetooth.Connection()
 
-def bluetooth_listener():
+def bluetooth_listener(base):
 	# Connect to bluetooth indefinitely
 	while 1:
-		base = bluetooth.Connection()
 		base.connect()
 		while 1:
 			message = base.listen()
@@ -21,20 +20,20 @@ def bluetooth_listener():
 
 def message_handler(message):
 	if message == b'mission':
-		print("Mission signal received.")
+		speak("Mission signal received.")
 		flight_controller = multiprocessing.Process(name='flight_controller', target=start_mission)
 		flight_controller.start()
 		return
 	elif message == b'land':
-		print("Land signal received.")
+		speak("Land signal received.")
 		flight_controller.terminate()
 		vehicle = connect(connection_string, wait_ready=True)
 		vehicle.mode = 'LAND'
 		return
 	elif message == b'kill':
-		print("Kill signal received")
+		speak("Kill signal received")
 	else:
-		print("Message not recognized.")
+		speak("Message not recognized.")
 
 def start_mission():
 	# Connect to the Vehicle
@@ -42,9 +41,10 @@ def start_mission():
 	vehicle = connect(connection_string, wait_ready=True, baud=921600)
 
 	# Begin mission
-	arm_and_takeoff(vehicle,10) 
+	arm_and_takeoff(vehicle,5) 
 
-	print("Moving forward at 3m/s for 5s")
+	#print("Moving forward at 3m/s for 5s")
+	# switch to GUIDED or 
 	# send_ned_velocity(vehicle, 5, 0, 0, 10)
 	print('Return to launch')
 	vehicle.mode = 'RTL'
@@ -52,6 +52,12 @@ def start_mission():
 	print("Close vehicle object")
 	vehicle.close()
 
-bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=bluetooth_listener)
+def speak(message):
+	print(message)
+	base.client.send(message)
+
+bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=bluetooth_listener, args=(base,))
 bluetooth_listener.start()
+
+# start_mission()
 		

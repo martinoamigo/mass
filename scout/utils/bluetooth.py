@@ -28,7 +28,6 @@ class Connection:
 
 	def listen(self):
 		try:	
-			# print("Listening...")
 			while 1:
 				data = self.client.recv(size)
 				if data:

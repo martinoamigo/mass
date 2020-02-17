@@ -12,17 +12,25 @@ class Connection:
 	def connect(self):
 		# try:
 		self.socket.connect((scout_bt_mac_addr, port))
+		print("Connected.")
 		# except:
 			# time.sleep(3)
 			# print("Could not connect, retrying...")
 			# self.connect()
+	
+	def listen(self):
+		try:	
+			while 1:
+				data = self.socket.recv(size)
+				if data:
+					return data
+		except:
+			print("[ERROR]: Connection lost.")
+			return False
 
 	def send_message(self, message):
 		try:	
 			self.socket.send(message)
-			data = self.socket.recv(size)
-			if data:
-				print(data)
 			return True
 		except:
 			print("Sending message failed.")
