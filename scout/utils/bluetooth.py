@@ -25,7 +25,7 @@ class Connection:
 			print("Connection accepted.")
 			return True
 		except:
-			print("[ERROR]: Not able to connect to client({})".format(sys.exc_info()[0]))
+			print("Not able to connect to client({})".format(sys.exc_info()[0]))
 			time.sleep(3)
 			self.client.close()
 			self.socket.close()
