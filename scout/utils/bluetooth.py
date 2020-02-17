@@ -48,7 +48,6 @@ class Connection:
 	def listen(self):
 		try:	
 			while 1:
-				time.sleep(1)
 				print("l inside")
 				data = self.client.recv(size)
 				if data:
