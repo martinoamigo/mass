@@ -29,7 +29,7 @@ def message_handler(message):
 	elif message == b'land':
 		base.send("Land signal received.")
 		flight_controller.terminate()
-		vehicle = connect(connection_string, wait_ready=True)
+		vehicle = connect(connection_string, wait_ready=True, baud=921600)
 		vehicle.mode = 'LAND'
 		return
 	
