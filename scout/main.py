@@ -14,10 +14,7 @@ def bluetooth_listener(base):
 		if conn:
 			while 1:
 				message = base.listen()
-				if not message:
-					break # reconnect
-				else:
-					message_handler(message)
+				message_handler(message)
 
 def message_handler(message):
 	if message == b'mission':
@@ -25,19 +22,36 @@ def message_handler(message):
 		flight_controller = multiprocessing.Process(name='flight_controller', target=start_mission)
 		flight_controller.start()
 		return
+	
 	elif message == b'land':
 		base.send("Land signal received.")
 		flight_controller.terminate()
 		vehicle = connect(connection_string, wait_ready=True)
 		vehicle.mode = 'LAND'
 		return
+	
 	elif message == b'disarm':
 		base.send("Disarming...")
-	elif message == b'kill':
-		base.send("Kill signal received")
+		vehicle.armed = False
+		while vehicle.armed:      
+			time.sleep(1)
+		base.send("Vehicle disarmed.")
+		if flight_controller:
+			flight_controller.terminate()
+	
+	elif message == b'stop':
+		if flight_controller:
+			flight_controller.terminate()
+			base.send("Mission stopped.")
+		else:
+			base.send("No mission to stop.")
 		return
+	
+	elif message == b'error':
+		print("[ERROR]: Some bluetooth exception. Likely out of range...")
+
 	else:
-		base.send("Message not recognized.")
+		base.send("Command not recognized. Valid commands are: \n- mission \n- land\n- disarm\n- stop")
 		return
 
 def start_mission():

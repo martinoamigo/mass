@@ -26,13 +26,13 @@ class Connection:
 				if data:
 					return data
 		except:
-			print("[ERROR]: Connection lost.")
-			return False
+			print("[BASE]: Receiving message failed: {}".format(sys.exc_info()[0]))
+			return b'error'
 
 	def send_message(self, message):
 		try:
 			self.socket.send(message)
 			return True
 		except:
-			print("Sending message failed: {}".format(sys.exc_info()[0]))
-			return False
+			print("[BASE]: Sending message failed: {}".format(sys.exc_info()[0]))
+			return b'error'

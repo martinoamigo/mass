@@ -25,7 +25,6 @@ class Connection:
 		self.client = None
 
 	def connect(self):
-		# self.socket = 
 		self.socket.bind((scout_bt_mac_addr, port))
 		self.socket.listen(backlog)
 		try:
@@ -53,11 +52,11 @@ class Connection:
 				if data:
 					return data
 		except:	
-			print("[ERROR]: Closed BT socket({})".format(sys.exc_info()[0]))
-			self.client.close()
-			self.socket.close()
-			time.sleep(5)
-			return False
+			# print("[ERROR]: Closed BT socket({})".format(sys.exc_info()[0]))
+			# self.client.close()
+			# self.socket.close()
+			# time.sleep(5)
+			return b'error'
 
 	def send(self, message):
 		print(message)
