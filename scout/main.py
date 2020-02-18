@@ -6,8 +6,10 @@ from utils.flight_utils import *
 import time
 
 connection_string = '/dev/serial0'
-global base
 flight_controller = None
+global base
+global vehicle
+
 
 def bluetooth_listener(base):
 	while 1:
@@ -29,7 +31,6 @@ def message_handler(message):
 	elif message == b'land':
 		base.send("Land signal received.")
 		flight_controller.terminate()
-		vehicle = connect(connection_string, wait_ready=True, baud=921600)
 		vehicle.mode = 'LAND'
 		return
 	
@@ -63,7 +64,6 @@ def message_handler(message):
 def start_mission():
 	# Connect to the Vehicle
 	base.send('Connecting to vehicle on: %s' % connection_string)
-	vehicle = connect(connection_string, wait_ready=True, baud=921600)
 
 	# Begin mission
 	arm_and_takeoff(base,vehicle,5) 
@@ -77,7 +77,9 @@ def start_mission():
 	print("Close vehicle object")
 	vehicle.close()
 
+vehicle = connect(connection_string, wait_ready=True, baud=921600)
 base = bluetooth.Connection()
+
 bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=bluetooth_listener, args=(base,))
 bluetooth_listener.start()
 		
