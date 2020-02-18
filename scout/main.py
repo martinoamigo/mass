@@ -73,7 +73,7 @@ def start_mission():
 	vehicle = connect(connection_string, wait_ready=True, baud=921600)
 
 	# Begin mission
-	arm_and_takeoff(base,vehicle,5) 
+	arm_and_takeoff(base,vehicle,10) 
 
 	#print("Moving forward at 3m/s for 5s")
 	# switch to GUIDED or GUIDEDNOGPS
