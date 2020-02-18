@@ -16,7 +16,8 @@ class Connection:
 			self.socket.connect((scout_bt_mac_addr, port))
 			print("Connected.")
 		except:
-			time.sleep(3)
+			self.socket.close()
+			time.sleep(5)
 			self.connect()
 	
 	def listen(self):

@@ -33,14 +33,14 @@ def message_handler(message):
 	
 	elif message == b'disarm':
 		base.send("Disarming...")
-		vehicle.armed = False
-		while vehicle.armed:      
-			time.sleep(1)
-		base.send("Vehicle disarmed.")
 		try:
+			vehicle.armed = False
+			while vehicle.armed:      
+				time.sleep(1)
+			base.send("Vehicle disarmed.")
 			flight_controller.terminate()
 		except:
-			base.send("No mission to stop.")
+			base.send("Could not disarm vehicle.")
 	
 	elif message == b'stop':
 		try:
