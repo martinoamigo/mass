@@ -34,6 +34,7 @@ def message_handler(message):
 			flight_controller.terminate()
 			vehicle = connect(connection_string, wait_ready=True, baud=921600)
 			vehicle.mode = 'LAND'
+			base.send("Vehicle mode set to 'LAND'.")
 		except:
 			base.send("Unable to land.")
 		return
