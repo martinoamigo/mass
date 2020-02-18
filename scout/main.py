@@ -7,6 +7,7 @@ import time
 
 connection_string = '/dev/serial0'
 global base
+global flight_controller
 
 def bluetooth_listener(base):
 	while 1:
