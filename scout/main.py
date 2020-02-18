@@ -36,23 +36,23 @@ def message_handler(message):
 	
 	elif message == b'disarm':
 		base.send("Disarm signal received. Connecting to Pixhawk...")
-		# try:
-		flight_controller.terminate()
-		vehicle = connect(connection_string, wait_ready=True, baud=921600)
-		vehicle.armed = False
-		while vehicle.armed:      
-			time.sleep(1)
-		base.send("Vehicle disarmed.")
-		# except:
-			# base.send("Could not disarm vehicle.")
+		try:
+			flight_controller.terminate()
+			vehicle = connect(connection_string, wait_ready=True, baud=921600)
+			vehicle.armed = False
+			while vehicle.armed:      
+				time.sleep(1)
+			base.send("Vehicle disarmed.")
+		except:
+			base.send("Could not disarm vehicle.")
 		return
 	
 	elif message == b'stop':
-		# try:
-		flight_controller.terminate()
-		base.send("Mission stopped.")
-		# except:
-			# base.send("No mission to stop.")
+		try:
+			flight_controller.terminate()
+			base.send("Mission stopped.")
+		except:
+			base.send("No mission to stop.")
 		return
 	
 	elif message == b'error':
