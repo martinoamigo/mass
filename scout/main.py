@@ -29,9 +29,13 @@ def message_handler(message):
 		return
 	
 	elif message == b'land':
-		base.send("Land signal received.")
-		flight_controller.terminate()
-		vehicle.mode = 'LAND'
+		base.send("Land signal received. Connecting to Pixhawk")
+		try:
+			flight_controller.terminate()
+			vehicle = connect(connection_string, wait_ready=True, baud=921600)
+			vehicle.mode = 'LAND'
+		except:
+			base.send("Unable to land.")
 		return
 	
 	elif message == b'disarm':
