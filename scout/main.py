@@ -20,6 +20,7 @@ def message_handler(message):
 	if message == b'mission':
 		base.send("Mission signal received.")
 		flight_controller = multiprocessing.Process(name='flight_controller', target=start_mission)
+		flight_controller.daemon = True
 		flight_controller.start()
 		return
 	

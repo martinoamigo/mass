@@ -32,7 +32,7 @@ class Connection:
 	def send_message(self, message):
 		try:
 			self.socket.send(message)
-			return True
+			return b'success'
 		except:
 			print("[BASE]: Sending message failed: {}".format(sys.exc_info()[0]))
 			return b'error'

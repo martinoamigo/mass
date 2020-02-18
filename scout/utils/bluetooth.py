@@ -23,25 +23,29 @@ class Connection:
 	def __init__(self):
 		self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 		self.client = None
-
-	def connect(self):
 		self.socket.bind((scout_bt_mac_addr, port))
 		self.socket.listen(backlog)
+
+	def connect(self):
 		try:
 			msg = "Waiting for base to request connection..."
 			print(msg)
 			log.info(msg)
+
 			self.client, clientInfo = self.socket.accept()
+
 			msg = "Connection accepted."
 			print(msg)
 			log.info(msg)
+			 
 			return True
 		except:
 			msg = "Not able to connect to client({})".format(sys.exc_info()[0])
 			print(msg)
 			log.info(msg)
-			self.client.close()
-			self.socket.close()
+
+			# self.client.close()
+			# self.socket.close()
 			time.sleep(5)
 			return False
 
