@@ -7,7 +7,7 @@ import time
 
 connection_string = '/dev/serial0'
 global base
-global flight_controller
+flight_controller = None
 
 def bluetooth_listener(base):
 	while 1:
@@ -18,6 +18,7 @@ def bluetooth_listener(base):
 				message_handler(message)
 
 def message_handler(message):
+	global flight_controller
 	if message == b'mission':
 		base.send("Mission signal received.")
 		flight_controller = multiprocessing.Process(name='flight_controller', target=start_mission)
