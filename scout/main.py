@@ -7,9 +7,8 @@ import time
 
 connection_string = '/dev/serial0'
 flight_controller = None
-global base
-global vehicle
-
+vehicle = None
+# global base
 
 def bluetooth_listener(base):
 	while 1:
@@ -21,18 +20,22 @@ def bluetooth_listener(base):
 
 def message_handler(message):
 	global flight_controller
+	global vehicle
 	if message == b'mission':
+		q = multiprocessing.Queue()
 		base.send("Mission signal received.")
-		flight_controller = multiprocessing.Process(name='flight_controller', target=start_mission)
+		flight_controller = multiprocessing.Process(name='flight_controller', target=start_mission, args=(q,))
 		flight_controller.daemon = True
 		flight_controller.start()
+		time.sleep(10)
+		vehicle = q.get()
 		return
 	
 	elif message == b'land':
 		base.send("Land signal received. Connecting to Pixhawk")
 		try:
 			flight_controller.terminate()
-			vehicle = connect(connection_string, wait_ready=True, baud=921600)
+			# vehicle = connect(connection_string, wait_ready=True, baud=921600)
 			vehicle.mode = 'LAND'
 			base.send("Vehicle mode set to 'LAND'.")
 		except:
@@ -42,8 +45,7 @@ def message_handler(message):
 	elif message == b'disarm':
 		base.send("Disarm signal received. Connecting to Pixhawk...")
 		try:
-			flight_controller.terminate()
-			vehicle = connect(connection_string, wait_ready=True, baud=921600)
+			# vehicle = connect(connection_string, wait_ready=True, baud=921600)
 			vehicle.armed = False
 			while vehicle.armed:      
 				time.sleep(1)
@@ -67,13 +69,13 @@ def message_handler(message):
 		base.send("Command not recognized. Valid commands are: \n- mission \n- land\n- disarm\n- stop")
 		return
 
-def start_mission():
+def start_mission(q):
 	# Connect to the Vehicle
 	base.send('Connecting to vehicle on: %s' % connection_string)
 	vehicle = connect(connection_string, wait_ready=True, baud=921600)
-
+	q.put(vehicle)
 	# Begin mission
-	arm_and_takeoff(base,vehicle,5) 
+	arm_and_takeoff(base,vehicle,3) 
 
 	#print("Moving forward at 3m/s for 5s")
 	# switch to GUIDED or GUIDEDNOGPS
