@@ -11,8 +11,11 @@ def bluetooth_listener(scout):
 	while 1:
 		scout.connect()
 		while 1:
-			message = str(scout.listen())
-			print("[SCOUT]: {}".format(message))
+			message = scout.listen()
+			try:
+				print("[SCOUT]: {}".format(message.decode()))
+			except:
+				print("[BASE]: Error decoding message: {}".format(message))
 
 bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=bluetooth_listener, args=(scout,))
 bluetooth_listener.start()
