@@ -136,6 +136,8 @@ def arm_and_takeoff(base, vehicle, aTargetAltitude):
         if vehicle.location.global_relative_frame.alt>=aTargetAltitude*0.95: #Trigger just below target alt.
             base.send("Reached target altitude")
             break
+        elif vehicle.mode != "STABILIZE"
+            base.send("Takeoff aborted")
         time.sleep(1)
 
 def send_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
