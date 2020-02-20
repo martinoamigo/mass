@@ -48,16 +48,13 @@ def message_handler(base, vehicle, message):
 
 def start_mission(vehicle):
 	# Begin mission
-	arm_and_takeoff(base,vehicle,3) 
-
-	#print("Moving forward at 3m/s for 5s")
-	# switch to GUIDED or GUIDEDNOGPS
-	# send_ned_velocity(vehicle, 5, 0, 0, 10)
-	print('Return to launch')
-	vehicle.mode = 'RTL'
-
-	print("Close vehicle object")
-	vehicle.close()
+	response = arm_and_takeoff(base,vehicle,3)
+	if response:
+		#print("Moving forward at 3m/s for 5s")
+		# switch to GUIDED or GUIDEDNOGPS
+		# send_ned_velocity(vehicle, 5, 0, 0, 10)
+		print('Return to launch')
+		vehicle.mode = 'RTL'
 
 
 # This can take a while, but we do it first for simplicity
@@ -66,8 +63,4 @@ vehicle = connect(connection_string, wait_ready=True, baud=921600)
 
 base = bluetooth.Connection()
 bluetooth_listener = threading.Thread(name='bluetooth_listener', target=bluetooth_listener, args=(base,vehicle))
-#bluetooth_listener.daemon = True # possibly remove this
 bluetooth_listener.start()
-
-
-		

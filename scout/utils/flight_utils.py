@@ -119,7 +119,8 @@ def arm_and_takeoff(base, vehicle, aTargetAltitude):
 
     base.send("Arming motors")
     # Copter should arm in GUIDED mode
-    vehicle.mode = VehicleMode("STABILIZE")
+    flight_mode = "STABILIZE"
+    vehicle.mode = flight_mode
     vehicle.armed = True
 
     while not vehicle.armed:      
@@ -135,9 +136,10 @@ def arm_and_takeoff(base, vehicle, aTargetAltitude):
         print(" Altitude: ", vehicle.location.global_relative_frame.alt)      
         if vehicle.location.global_relative_frame.alt>=aTargetAltitude*0.95: #Trigger just below target alt.
             base.send("Reached target altitude")
-            break
-        elif vehicle.mode != "STABILIZE"
+            return True
+        elif vehicle.mode != flight_mode:
             base.send("Takeoff aborted")
+            return False
         time.sleep(1)
 
 def send_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
