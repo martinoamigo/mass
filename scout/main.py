@@ -9,7 +9,7 @@ import time
 connection_string = '/dev/serial0'
 
 def bluetooth_listener(base, vehicle):
-""" Runs in the background to receive any messages sent from the base. Will only process one message at a time."""
+	""" Runs in the background to receive any messages sent from the base. Will only process one message at a time."""
 	conn = base.connect()
 	base.send("Connected to vehicle on {}\nType: {}\nArmed: {}\nSystem Status: {}\nGPS: {}\nAlt: {}\n".format(connection_string, vehicle._vehicle_type,vehicle.armed, vehicle.system_status.state, vehicle.gps_0, vehicle.location.global_relative_frame.alt))
 	while 1:
@@ -18,13 +18,10 @@ def bluetooth_listener(base, vehicle):
 
 def message_handler(base, vehicle, message):
 	if message == b'mission':
-		q = multiprocessing.Queue()
 		base.send("Mission signal received.")
 		flight_controller = threading.Thread(name='flight_controller', target=start_mission, arg=(vehicle,))
 		flight_controller.daemon = True
 		flight_controller.start()
-		time.sleep(10)
-		vehicle = q.get()
 		return
 	
 	elif message == b'land':
@@ -60,9 +57,6 @@ def message_handler(base, vehicle, message):
 		return
 
 def start_mission(vehicle):
-	# Connect to the Vehicle
-	base.send('Connecting to vehicle on: %s' % connection_string)
-
 	# Begin mission
 	arm_and_takeoff(base,vehicle,3) 
 
@@ -77,11 +71,12 @@ def start_mission(vehicle):
 
 
 # This can take a while, but we do it first for simplicity
+print('Connecting to vehicle on: %s' % connection_string)
 vehicle = connect(connection_string, wait_ready=True, baud=921600)
 
 base = bluetooth.Connection()
 bluetooth_listener = threading.Thread(name='bluetooth_listener', target=bluetooth_listener, args=(base,vehicle))
-bluetooth_listener.daemon = True # possibly remove this
+#bluetooth_listener.daemon = True # possibly remove this
 bluetooth_listener.start()
 
 
