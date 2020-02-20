@@ -21,12 +21,12 @@ while 1:
 	message = input()
 	if message == "exit":
 		break
-	response = scout.send_message(message)
-	# if response == b'error':
-		# Reconnect
-		# del scout
-		# scout = bluetooth.Connection()
-		# scout.connect()
+	scout.send_message(message)
+	# if not response:
+	# 	# Reconnect
+	# 	del scout
+	# 	scout = bluetooth.Connection()
+	# 	scout.connect()
 
 self.socket.close()
 

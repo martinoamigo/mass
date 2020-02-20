@@ -18,10 +18,13 @@ def bluetooth_listener(base, vehicle):
 
 def message_handler(base, vehicle, message):
 	if message == b'mission':
+		q = multiprocessing.Queue()
 		base.send("Mission signal received.")
 		flight_controller = threading.Thread(name='flight_controller', target=start_mission, arg=(vehicle,))
 		flight_controller.daemon = True
 		flight_controller.start()
+		time.sleep(10)
+		vehicle = q.get()
 		return
 	
 	elif message == b'land':
@@ -61,7 +64,7 @@ def start_mission(vehicle):
 	base.send('Connecting to vehicle on: %s' % connection_string)
 
 	# Begin mission
-	arm_and_takeoff(base,vehicle,5) 
+	arm_and_takeoff(base,vehicle,3) 
 
 	#print("Moving forward at 3m/s for 5s")
 	# switch to GUIDED or GUIDEDNOGPS

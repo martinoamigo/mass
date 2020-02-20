@@ -16,7 +16,8 @@ class Connection:
 			self.socket.connect((scout_bt_mac_addr, port))
 			print("Connected.")
 		except:
-			time.sleep(3)
+			self.socket.close()
+			time.sleep(5)
 			self.connect()
 	
 	def listen(self):
@@ -31,7 +32,7 @@ class Connection:
 	def send_message(self, message):
 		try:
 			self.socket.send(message)
-			return True
+			return b'success'
 		except:
 			print("[BASE]: Sending message failed: {}".format(sys.exc_info()[0]))
 			return b'error'
