@@ -11,12 +11,8 @@ def bluetooth_listener(scout):
 	while 1:
 		scout.connect()
 		while 1:
-			message = scout.listen()
-			if message == b'error':
-				print("[BASE]: Some bluetooth exception.")
-				# break # Reconnect
-			else:
-				print("[SCOUT]: {}".format(message))
+			message = str(scout.listen())
+			print("[SCOUT]: {}".format(message))
 
 bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=bluetooth_listener, args=(scout,))
 bluetooth_listener.start()
@@ -26,11 +22,11 @@ while 1:
 	if message == "exit":
 		break
 	response = scout.send_message(message)
-	if not response:
+	# if response == b'error':
 		# Reconnect
-		del scout
-		scout = bluetooth.Connection()
-		scout.connect()
+		# del scout
+		# scout = bluetooth.Connection()
+		# scout.connect()
 
 self.socket.close()
 

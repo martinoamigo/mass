@@ -27,7 +27,6 @@ class Connection:
 					return data
 		except:
 			print("[BASE]: Receiving message failed: {}".format(sys.exc_info()[0]))
-			return b'error'
 
 	def send_message(self, message):
 		try:
