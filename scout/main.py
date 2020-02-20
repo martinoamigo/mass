@@ -19,15 +19,13 @@ def bluetooth_listener(base, vehicle):
 def message_handler(base, vehicle, message):
 	if message == b'mission':
 		base.send("Mission signal received.")
-		flight_controller = threading.Thread(name='flight_controller', target=start_mission, arg=(vehicle,))
+		flight_controller = threading.Thread(name='flight_controller', target=start_mission, args=(vehicle,))
 		flight_controller.daemon = True
 		flight_controller.start()
 		return
 	
 	elif message == b'land':
 		base.send("Land signal received.")
-		# flight_controller.terminate()
-		# vehicle = connect(connection_string, wait_ready=True)
 		vehicle.mode = 'LAND'
 		return
 	
@@ -40,14 +38,6 @@ def message_handler(base, vehicle, message):
 			base.send("Vehicle disarmed.")
 		except:
 			base.send("Could not disarm vehicle.")
-	
-	# elif message == b'stop':
-	# 	if flight_controller:
-	# 		flight_controller.terminate()
-	# 		base.send("Mission stopped.")
-	# 	else:
-	# 		base.send("No mission to stop.")
-	# 	return
 	
 	elif message == b'error':
 		print("[ERROR]: Some bluetooth exception. Likely out of range...")
