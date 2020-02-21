@@ -56,11 +56,10 @@ class Connection:
 				if data:
 					return data
 		except:	
-			# print("[ERROR]: Closed BT socket({})".format(sys.exc_info()[0]))
 			# self.client.close()
 			# self.socket.close()
-			# time.sleep(5)
-			return b'error'
+			time.sleep(5)
+			return False
 
 	def send(self, message):
 		print(message)

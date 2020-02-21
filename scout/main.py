@@ -14,6 +14,10 @@ def bluetooth_listener(base, vehicle):
 	base.send("Connected to vehicle on {}\nType: {}\nArmed: {}\nSystem Status: {}\nGPS: {}\nAlt: {}\n".format(connection_string, vehicle._vehicle_type,vehicle.armed, vehicle.system_status.state, vehicle.gps_0, vehicle.location.global_relative_frame.alt))
 	while 1:
 		message = base.listen()
+		if not message:
+			# reconnect
+			base = bluetooth.Connection()
+			base.connect()
 		message_handler(base, vehicle, message)
 
 def message_handler(base, vehicle, message):

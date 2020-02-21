@@ -7,15 +7,15 @@ import multiprocessing
 scout = bluetooth.Connection()
 
 def bluetooth_listener(scout):
-	# Connect to bluetooth indefinitely
+	scout.connect()
 	while 1:
-		scout.connect()
-		while 1:
-			message = scout.listen()
-			try:
-				print("[SCOUT]: {}".format(message.decode()))
-			except:
-				print("[BASE]: Error decoding message: {}".format(message))
+		message = scout.listen()
+		if not message:
+			break
+		try:
+			print("[SCOUT]: {}".format(message.decode()))
+		except:
+			print("[BASE]: Error decoding message: {}".format(message))
 
 bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=bluetooth_listener, args=(scout,))
 bluetooth_listener.start()
