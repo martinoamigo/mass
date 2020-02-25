@@ -12,13 +12,12 @@ class Connection:
 
 	def connect(self):
 		try:
-			print("Connecting...")
 			self.socket.connect((scout_bt_mac_addr, port))
-			print("Connected.")
+			return True
 		except:
-			self.socket.close()
+			# self.socket.close()
 			time.sleep(5)
-			self.connect()
+			return False
 	
 	def listen(self):
 		try:	
@@ -27,12 +26,11 @@ class Connection:
 				if data:
 					return data
 		except:
-			print("[BASE]: Receiving message failed: {}".format(sys.exc_info()[0]))
+			return False
 
 	def send_message(self, message):
 		try:
 			self.socket.send(message)
-			return b'success'
+			return True
 		except:
-			print("[BASE]: Sending message failed: {}".format(sys.exc_info()[0]))
-			return b'error'
+			return False
