@@ -43,9 +43,6 @@ class Connection:
 			msg = "Not able to connect to client({})".format(sys.exc_info()[0])
 			print(msg)
 			log.info(msg)
-
-			# self.client.close()
-			# self.socket.close()
 			time.sleep(5)
 			return False
 
@@ -56,11 +53,12 @@ class Connection:
 				if data:
 					return data
 		except:	
-			# self.client.close()
-			# self.socket.close()
 			time.sleep(5)
 			return False
 
 	def send(self, message):
-		print(message)
-		self.client.send(message)
+		try:
+			print(message)
+			self.client.send(message)
+		except:
+			print("Could not send message to base. No action taken.")

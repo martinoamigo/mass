@@ -10,12 +10,15 @@ connection_string = '/dev/serial0'
 
 def bluetooth_listener(base, vehicle):
 	""" Runs in the background to receive any messages sent from the base. Will only process one message at a time."""
-	conn = base.connect()
+	base.connect()
 	base.send("Connected to vehicle on {}\nType: {}\nArmed: {}\nSystem Status: {}\nGPS: {}\nAlt: {}\n".format(connection_string, vehicle._vehicle_type,vehicle.armed, vehicle.system_status.state, vehicle.gps_0, vehicle.location.global_relative_frame.alt))
 	while 1:
 		message = base.listen()
-		if not message:
+		if not message or message == b'error':
 			# reconnect
+			# vehicle.mode = 'LAND'
+			base.client.close()
+			base.socket.close()
 			base = bluetooth.Connection()
 			base.connect()
 		message_handler(base, vehicle, message)
@@ -43,11 +46,8 @@ def message_handler(base, vehicle, message):
 		except:
 			base.send("Could not disarm vehicle.")
 	
-	elif message == b'error':
-		print("[ERROR]: Some bluetooth exception. Likely out of range...")
-
 	else:
-		base.send("Command not recognized. Valid commands are: \n- mission \n- land\n- disarm\n- stop")
+		base.send("Command not recognized. Valid commands are: \n- mission \n- land\n- disarm")
 		return
 
 def start_mission(vehicle):
