@@ -1,23 +1,33 @@
 import time
 import sys
 import utils.bluetooth as bluetooth
-import multiprocessing
+import threading
 
 #connect to scout
 scout = bluetooth.Connection()
 
-def bluetooth_listener(scout):
-	scout.connect()
-	while 1:
+def bluetooth_listener():
+	global scout
+	connected = scout.connect()
+	while 1:	
+		while not connected:
+			print("Connecting...")
+			scout = bluetooth.Connection()
+			connected = scout.connect()
+			if connected:
+				print("Connected.")
+		
 		message = scout.listen()
 		if not message:
-			break
-		try:
-			print("[SCOUT]: {}".format(message.decode()))
-		except:
-			print("[BASE]: Error decoding message: {}".format(message))
+			print("[BASE]: Receiving message failed: {}".format(sys.exc_info()[0]))
+			connected = False
+		else:
+			try:
+				print("[SCOUT]: {}".format(message.decode()))
+			except:
+				print("[BASE]: Error decoding message: {}".format(message))
 
-bluetooth_listener = multiprocessing.Process(name='bluetooth_listener', target=bluetooth_listener, args=(scout,))
+bluetooth_listener = threading.Thread(name='bluetooth_listener', target=bluetooth_listener)
 bluetooth_listener.start()
 
 while 1:
@@ -26,10 +36,9 @@ while 1:
 		break
 	response = scout.send_message(message)
 	if not response:
-		# Reconnect
-		# del scout
-		# scout = bluetooth.Connection()
-		scout.connect()
+		print("[BASE]: Sending message failed: {}".format(sys.exc_info()[0]))
+		connected = False
+
 
 self.socket.close()
 
