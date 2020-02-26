@@ -1,9 +1,12 @@
 from __future__ import print_function
-import pixy 
-from ctypes import *
-from pixy import *
+from ctypes import Structure, c_uint
 import time
 import math
+if __name__ == "__main__":
+    import pixy
+else:
+    from . import pixy
+
 
 pixy.init()
 pixy.change_prog("color_connected_components")
@@ -29,13 +32,12 @@ class Blocks (Structure):
     ("m_index", c_uint),
     ("m_age", c_uint) ]
 
-blocks = BlockArray(100)
+blocks = pixy.BlockArray(100)
 
 # def phase1():
 #     complete = False
 #     while not complete:
 
-        
 def get_base_position():
     objects_seen = pixy.ccc_get_blocks(100, blocks)
         
@@ -57,6 +59,6 @@ def get_base_position():
             position_vector = (target_block.m_x - base_center_target[0], base_center_target[1] - target_block.m_y)
             return position_vector
   
-while True:
-    print(get_base_position())
-    time.sleep(1)
+# while True:
+#     print(get_base_position())
+#     time.sleep(1)

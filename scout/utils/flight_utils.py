@@ -126,6 +126,9 @@ def arm_and_takeoff(base, vehicle, aTargetAltitude):
     while not vehicle.armed:      
         base.send(" Waiting for arming...")
         time.sleep(1)
+        if vehicle.mode != flight_mode:
+            base.send("Takeoff aborted")
+            return False
 
     base.send("Taking off!")
     vehicle.simple_takeoff(aTargetAltitude) # Take off to target altitude

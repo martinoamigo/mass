@@ -1,10 +1,11 @@
 import os,inspect
 import sys
-# import multiprocessing
 import threading
+import time
+
 import utils.bluetooth as bluetooth 
 from utils.flight_utils import *
-import time
+# import utils.pixycam as mypixy
 
 connection_string = '/dev/serial0'
 
@@ -21,22 +22,37 @@ def bluetooth_listener(base, vehicle):
 			base.socket.close()
 			base = bluetooth.Connection()
 			base.connect()
-		message_handler(base, vehicle, message)
+		try:
+			message_handler(base, vehicle, message.decode())
+		except:
+			base.send("Could not decode message '{}'".format(message))
 
 def message_handler(base, vehicle, message):
-	if message == b'mission':
+	if message == 'mission':
 		base.send("Mission signal received.")
 		flight_controller = threading.Thread(name='flight_controller', target=start_mission, args=(vehicle,))
 		flight_controller.daemon = True
 		flight_controller.start()
 		return
+		
+	elif message == 'takeoff':
+		base.send("Takeoff signal received.")
+		flight_controller = threading.Thread(name='flight_controller', target=takeoff, args=(vehicle,))
+		flight_controller.daemon = True
+		flight_controller.start()
+		return
 	
-	elif message == b'land':
+	elif message == 'land':
 		base.send("Land signal received.")
 		vehicle.mode = 'LAND'
 		return
+
+	elif message == 'rtl':
+		base.send("Land signal received.")
+		vehicle.mode = 'RTL'
+		return
 	
-	elif message == b'disarm':
+	elif message == 'disarm':
 		try:
 			base.send("Disarming...")
 			vehicle.armed = False
@@ -46,22 +62,47 @@ def message_handler(base, vehicle, message):
 		except:
 			base.send("Could not disarm vehicle.")
 	
+	elif 'move' in message:
+		try:
+			args = message.decode().split()
+			if len(args) != 5:
+				raise Exception()
+			# move(args[1], args[2], args[3], args[4])
+			send_ned_velocity(vehicle, args[1],  args[2], args[3], args[4])
+		except:
+			base.send("Invalid arguements for 'move'. Required format is 'move x, y, z, t'")
+	
 	else:
-		base.send("Command not recognized. Valid commands are: \n- mission \n- land\n- disarm")
+		base.send("Command not recognized. Valid commands are: \n- mission \n- takeoff\n- land\n- rtl\n- disarm\n- move x y z t")
 		return
 
 def start_mission(vehicle):
 	# Begin mission
-	response = arm_and_takeoff(base,vehicle,3)
+	if vehicle.armed == False:
+		response = arm_and_takeoff(base,vehicle,1)
+		if response:
+			# base.send("Moving forward in the x direction")
+			# send_ned_velocity(vehicle, .1, 0, 0, 3)
+			print('Return to launch')
+			vehicle.mode = 'RTL'
+	else:
+		base.send("Vehicle is armed, cannot begin new mission.")
+	
+def takeoff(vehicle):
+	response = arm_and_takeoff(base,vehicle,1)
 	if response:
-		#print("Moving forward at 3m/s for 5s")
-		# switch to GUIDED or GUIDEDNOGPS
-		# send_ned_velocity(vehicle, 5, 0, 0, 10)
-		print('Return to launch')
-		vehicle.mode = 'RTL'
+		base.send("Takeoff complete. Waiting for next command...")
+
+# def move(x,y,z,t):
+# 	base.send("({}, {}, {}, {})".format(x, y, z, t))
+
+# def land_on_base(vehicle):
+# 	position_vec = pixy.get_base_position()
+# 	if position_vec = None:
+# 	else:
 
 
-# This can take a while, but we do it first for simplicity
+# This can take a while
 print('Connecting to vehicle on: %s' % connection_string)
 vehicle = connect(connection_string, wait_ready=True, baud=921600)
 
