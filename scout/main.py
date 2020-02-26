@@ -84,7 +84,7 @@ def start_mission(vehicle):
 			# base.send("Moving forward in the x direction")
 			# send_ned_velocity(vehicle, .1, 0, 0, 3)
 			print('Return to launch')
-			vehicle.mode = 'RTL'
+			vehicle.mode = 'LAND'
 	else:
 		base.send("Vehicle is armed, cannot begin new mission.")
 	
