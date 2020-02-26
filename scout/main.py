@@ -64,10 +64,10 @@ def message_handler(base, vehicle, message):
 	
 	elif 'move' in message:
 		try:
-			args = message.decode().split()
+			args = message.split()
 			if len(args) != 5:
 				raise Exception()
-			# move(args[1], args[2], args[3], args[4])
+			base.send("this is proper format, wrong exception")
 			send_ned_velocity(vehicle, args[1],  args[2], args[3], args[4])
 		except:
 			base.send("Invalid arguements for 'move'. Required format is 'move x, y, z, t'")

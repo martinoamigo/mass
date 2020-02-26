@@ -119,7 +119,7 @@ def arm_and_takeoff(base, vehicle, aTargetAltitude):
 
     base.send("Arming motors")
     # Copter should arm in GUIDED mode
-    flight_mode = "STABILIZE"
+    flight_mode = "GUIDED"
     vehicle.mode = flight_mode
     vehicle.armed = True
 
