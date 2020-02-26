@@ -112,7 +112,7 @@ def arm_and_takeoff(base, vehicle, aTargetAltitude):
     Arms vehicle and fly to aTargetAltitude.
     """
     
-    base.send("Basic pre-arm checks")
+    # base.send("Basic pre-arm checks")
     # while not vehicle.is_armable:
     #     print(" Waiting for vehicle to be armable...")
     #     time.sleep(1)
@@ -138,12 +138,12 @@ def arm_and_takeoff(base, vehicle, aTargetAltitude):
     while True:
         print(" Altitude: ", vehicle.location.global_relative_frame.alt)      
         if vehicle.location.global_relative_frame.alt>=aTargetAltitude*0.95: #Trigger just below target alt.
-            base.send("Reached target altitude")
+            base.send("Reached target altitude.")
             return True
         elif vehicle.mode != flight_mode:
-            base.send("Takeoff aborted")
+            base.send("Takeoff aborted.")
             return False
-        time.sleep(1)
+        time.sleep(.25)
 
 def send_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
     """
