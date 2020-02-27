@@ -13,19 +13,9 @@ from dronekit import connect, VehicleMode, LocationGlobalRelative, LocationGloba
 import time
 import math
 from pymavlink import mavutil
+import numpy as np
 
 def get_location_metres(original_location, dNorth, dEast):
-    """
-    Returns a LocationGlobal object containing the latitude/longitude `dNorth` and `dEast` metres from the 
-    specified `original_location`. The returned Location has the same `alt` value
-    as `original_location`.
-
-    The function is useful when you want to move the vehicle around specifying locations relative to 
-    the current vehicle position.
-    The algorithm is relatively accurate over small distances (10m within 1km) except close to the poles.
-    For more information see:
-    http://gis.stackexchange.com/questions/2951/algorithm-for-offsetting-a-latitude-longitude-by-some-amount-of-meters
-    """
     earth_radius=6378137.0 #Radius of "spherical" earth
     #Coordinate offsets in radians
     dLat = dNorth/earth_radius
@@ -37,22 +27,11 @@ def get_location_metres(original_location, dNorth, dEast):
     return LocationGlobal(newlat, newlon,original_location.alt)
 
 def get_distance_metres(aLocation1, aLocation2):
-    """
-    Returns the ground distance in metres between two LocationGlobal objects.
-
-    This method is an approximation, and will not be accurate over large distances and close to the 
-    earth's poles. It comes from the ArduPilot test code: 
-    https://github.com/diydrones/ardupilot/blob/master/Tools/autotest/common.py
-    """
     dlat = aLocation2.lat - aLocation1.lat
     dlong = aLocation2.lon - aLocation1.lon
     return math.sqrt((dlat*dlat) + (dlong*dlong)) * 1.113195e5
 
 def distance_to_current_waypoint(vehicle):
-    """
-    Gets distance in metres to the current waypoint. 
-    It returns None for the first waypoint (Home location).
-    """
     nextwaypoint = vehicle.commands.next
     if nextwaypoint==0:
         return None
@@ -65,9 +44,6 @@ def distance_to_current_waypoint(vehicle):
     return distancetopoint
 
 def download_mission(vehicle):
-    """
-    Download the current mission from the vehicle.
-    """
     cmds = vehicle.commands
     cmds.download()
     cmds.wait_ready() # wait until download is complete.
@@ -108,10 +84,7 @@ def adds_square_mission(vehicle, aLocation, aSize):
     cmds.upload()
 
 def arm_and_takeoff(base, vehicle, aTargetAltitude):
-    """
-    Arms vehicle and fly to aTargetAltitude.
-    """
-    
+
     base.send("Basic pre-arm checks")
     while not vehicle.is_armable:
         print(" Waiting for vehicle to be armable...")
@@ -168,5 +141,21 @@ def send_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
         vehicle.send_mavlink(msg)
         time.sleep(1)
 
-        
 
+#pixycam
+horizontal_fov = 118.2 * math.pi/180
+vertical_fov = 69.5 * math.pi/180
+horizontal_resolution = 1280
+vertical_resolution = 720
+
+def send_land_message(vehicle, x, y):
+    msg = vehicle.message_factory.landing_target_encode(
+        0,       # time_boot_ms (not used)
+        0,       # target num
+        0,       # frame
+        (x-horizontal_resolution/2)*horizontal_fov/horizontal_resolution,
+        (y-vertical_resolution/2)*vertical_fov/vertical_resolution,
+        0,       # altitude.  Not supported.
+        0,0)     # size of target in radians
+    vehicle.send_mavlink(msg)
+    vehicle.flush()
