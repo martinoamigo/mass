@@ -62,7 +62,11 @@ def message_handler(base, vehicle, message):
 	elif message == 'stabilize':
 		base.send("Stabilize signal received.")
 		vehicle.mode = 'STABILIZE'
-	
+
+	elif message == 'guided':
+                base.send("Guided signal received.")
+                vehicle.mode = 'GUIDED'
+
 	elif message == 'disarm':
 		try:
 			base.send("Disarming...")
@@ -84,7 +88,7 @@ def message_handler(base, vehicle, message):
 			base.send("Invalid arguements for 'move'. Required format is 'move x, y, z, t'")
 	
 	else:
-		base.send("Command not recognized. Valid commands are: \n- mission \n- takeoff (height in meters)\n- land\n- rtl\n- loiter\n- stabilize\n- disarm\n- move x y z t")
+		base.send("Command not recognized. Valid commands are: \n- mission \n- takeoff (height in meters)\n- land\n- rtl\n- loiter\n- stabilize\n- guided\n- disarm\n- move x y z t")
 		return
 
 def start_mission(vehicle, altitude):                                                                                                                                                                                                                                                
@@ -101,8 +105,8 @@ def start_mission(vehicle, altitude):
 	else:
 		base.send("Vehicle is armed or takeoff height is above 25m, cannot begin new mission.")
 	
-def takeoff(vehicle):
-	response = arm_and_takeoff(base,vehicle,1)
+def takeoff(vehicle, altitude):
+	response = arm_and_takeoff(base,vehicle,altitude)
 	if response:
 		base.send("Takeoff complete. Waiting for next command...")
 
