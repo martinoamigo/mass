@@ -2,6 +2,7 @@ import os,inspect
 import sys
 import threading
 import time
+import math
 
 import utils.bluetooth as bluetooth 
 from utils.flight_utils import *
@@ -98,11 +99,16 @@ def takeoff(vehicle):
 # def move(x,y,z,t):
 # 	base.send("({}, {}, {}, {})".format(x, y, z, t))
 
-# def land_on_base(vehicle):
-# 	position_vec = pixy.get_base_position()
-# 	if position_vec = None:
-# 	else:
-
+def land_on_base(vehicle):
+	landed = False
+	while not landed:
+		position_vec = pixy.get_base_position()
+		if position_vec = None:
+			pass
+		else:
+			if math.sqrt(position_vec[0]*position_vec[0] + position_vec[1]*position_vec[0]) > 1:
+				send_ned_velocity(position_vec[0], position_vec[1], 0, t)
+			send_ned_velocity(0, 0, -.1, t)
 
 # This can take a while
 print('Connecting to vehicle on: %s' % connection_string)
