@@ -83,10 +83,12 @@ def message_handler(base, vehicle, message):
 			args = message.split()
 			if len(args) != 5:
 				raise Exception()
-			base.send("this is proper format, wrong exception")
-			send_ned_velocity(vehicle, args[1],  args[2], args[3], args[4])
 		except:
 			base.send("Invalid arguements for 'move'. Required format is 'move x, y, z, t'")
+		try:
+			send_ned_velocity(vehicle, args[1],  args[2], args[3], args[4])
+		except:
+			base.send("Move command failed with '{}'".format(sys.exc_info()[0]))
 	
 	else:
 		base.send("Command not recognized. Valid commands are: \n- mission \n- takeoff (height in meters)\n- land\n- rtl\n- loiter\n- stabilize\n- guided\n- disarm\n- move x y z t")
