@@ -31,28 +31,43 @@ def bluetooth_listener(base, vehicle):
 def message_handler(base, vehicle, message):
 	if message == 'mission':
 		base.send("Mission signal received.")
-		flight_controller = threading.Thread(name='flight_controller', target=start_mission, args=(vehicle,))
+		flight_controller = threading.Thread(name='flight_controller', target=start_mission, args=(vehicle,1))
 		flight_controller.daemon = True
 		flight_controller.start()
-		return
 		
-	elif message == 'takeoff':
-		base.send("Takeoff signal received.")
-		flight_controller = threading.Thread(name='flight_controller', target=takeoff, args=(vehicle,))
-		flight_controller.daemon = True
-		flight_controller.start()
-		return
+	elif 'takeoff' in message:
+		try:
+			args = message.split()
+			if len(args) != 2:
+				raise Exception()
+			args[1] = int(args[1])
+			base.send("Takeoff signal received.")
+			flight_controller = threading.Thread(name='flight_controller', target=takeoff, args=(vehicle,args[1]))
+			flight_controller.daemon = True
+			flight_controller.start()
+		except:
+			base.send("Invalid arguements for 'takeoff'. Required format is 'takeoff (height in meters)'")
 	
 	elif message == 'land':
 		base.send("Land signal received.")
 		vehicle.mode = 'LAND'
-		return
 
 	elif message == 'rtl':
-		base.send("Land signal received.")
+		base.send("RTL signal received.")
 		vehicle.mode = 'RTL'
-		return
+
+	elif message == 'loiter':
+		base.send("Loiter signal received.")
+		vehicle.mode = 'LOITER'
 	
+	elif message == 'stabilize':
+		base.send("Stabilize signal received.")
+		vehicle.mode = 'STABILIZE'
+
+	elif message == 'guided':
+                base.send("Guided signal received.")
+                vehicle.mode = 'GUIDED'
+
 	elif message == 'disarm':
 		try:
 			base.send("Disarming...")
@@ -74,13 +89,13 @@ def message_handler(base, vehicle, message):
 			base.send("Invalid arguements for 'move'. Required format is 'move x, y, z, t'")
 	
 	else:
-		base.send("Command not recognized. Valid commands are: \n- mission \n- takeoff\n- land\n- rtl\n- disarm\n- move x y z t")
+		base.send("Command not recognized. Valid commands are: \n- mission \n- takeoff (height in meters)\n- land\n- rtl\n- loiter\n- stabilize\n- guided\n- disarm\n- move x y z t")
 		return
 
-def start_mission(vehicle):
+def start_mission(vehicle, altitude):                                                                                                                                                                                                                                                
 	# Begin mission
-	if vehicle.armed == False:
-		response = arm_and_takeoff(base,vehicle,1)
+	if vehicle.armed == False and altitude < 25:
+		response = arm_and_takeoff(base,vehicle,altitude)
 		if response:
 			# base.send("Moving forward in the x direction")
 			# send_ned_velocity(vehicle, .1, 0, 0, 3)
@@ -89,10 +104,10 @@ def start_mission(vehicle):
 			base.send("Landing...")
 			vehicle.mode = 'LAND'
 	else:
-		base.send("Vehicle is armed, cannot begin new mission.")
+		base.send("Vehicle is armed or takeoff height is above 25m, cannot begin new mission.")
 	
-def takeoff(vehicle):
-	response = arm_and_takeoff(base,vehicle,1)
+def takeoff(vehicle, altitude):
+	response = arm_and_takeoff(base,vehicle,altitude)
 	if response:
 		base.send("Takeoff complete. Waiting for next command...")
 

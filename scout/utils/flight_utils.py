@@ -112,22 +112,25 @@ def arm_and_takeoff(base, vehicle, aTargetAltitude):
     Arms vehicle and fly to aTargetAltitude.
     """
     
-    # base.send("Basic pre-arm checks")
-    # while not vehicle.is_armable:
-    #     print(" Waiting for vehicle to be armable...")
-    #     time.sleep(1)
+    base.send("Basic pre-arm checks")
+    while not vehicle.is_armable:
+        print(" Waiting for vehicle to be armable...")
+        if vehicle.mode != flight_mode:
+            base.send("Takeoff aborted, flight mode changed.")
+            return False
+        time.sleep(1)
 
     base.send("Arming motors")
     # Copter should arm in GUIDED mode
     flight_mode = "GUIDED"
-    vehicle.mode = flight_mode
+    # vehicle.mode = flight_mode
     vehicle.armed = True
 
     while not vehicle.armed:      
         base.send(" Waiting for arming...")
         time.sleep(1)
         if vehicle.mode != flight_mode:
-            base.send("Takeoff aborted")
+            base.send("Takeoff aborted, flight mode changed.")
             return False
 
     base.send("Taking off!")
@@ -141,9 +144,9 @@ def arm_and_takeoff(base, vehicle, aTargetAltitude):
             base.send("Reached target altitude.")
             return True
         elif vehicle.mode != flight_mode:
-            base.send("Takeoff aborted.")
+            base.send("Takeoff aborted, flight mode changed.")
             return False
-        time.sleep(.25)
+        time.sleep(.5)
 
 def send_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
     """
