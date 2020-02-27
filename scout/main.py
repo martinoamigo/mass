@@ -30,7 +30,7 @@ def bluetooth_listener(base, vehicle):
 def message_handler(base, vehicle, message):
 	if message == 'mission':
 		base.send("Mission signal received.")
-		flight_controller = threading.Thread(name='flight_controller', target=start_mission, args=(vehicle,))
+		flight_controller = threading.Thread(name='flight_controller', target=start_mission, args=(vehicle,1))
 		flight_controller.daemon = True
 		flight_controller.start()
 		
@@ -60,7 +60,7 @@ def message_handler(base, vehicle, message):
 		vehicle.mode = 'LOITER'
 	
 	elif message == 'stabilize':
-		base.send("Loiter signal received.")
+		base.send("Stabilize signal received.")
 		vehicle.mode = 'STABILIZE'
 	
 	elif message == 'disarm':
