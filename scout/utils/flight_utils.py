@@ -143,10 +143,10 @@ def send_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
 
 
 #pixycam
-horizontal_fov = 118.2 * math.pi/180
-vertical_fov = 69.5 * math.pi/180
-horizontal_resolution = 1280
-vertical_resolution = 720
+horizontal_fov = 60 * math.pi/180
+vertical_fov = 40 * math.pi/180
+horizontal_resolution = 158 * 2
+vertical_resolution = 104 * 2
 
 def send_land_message(vehicle, x, y):
     msg = vehicle.message_factory.landing_target_encode(

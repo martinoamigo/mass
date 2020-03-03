@@ -5,6 +5,7 @@ import threading
 import time
 import math
 from ctypes import Structure, c_uint
+import traceback
 
 import utils.bluetooth as bluetooth 
 from utils.flight_utils import *
@@ -134,6 +135,13 @@ def message_handler(base, vehicle, message):
 			send_ned_velocity(vehicle, args[1],  args[2], args[3], args[4])
 		except:
 			base.send("Move command failed with '{}'".format(sys.exc_info()[0]))
+			print(traceback.format_exc())
+	
+	elif message == 'pland':
+		base.send("pland signal received.")
+		flight_controller = threading.Thread(name='flight_controller', target=land_on_base, args=(vehicle,))
+		flight_controller.daemon = True
+		flight_controller.start()
 	
 	else:
 		base.send("Command not recognized. Valid commands are: \n- mission \n- takeoff (height in meters)\n- land\n- rtl\n- loiter\n- stabilize\n- guided\n- disarm\n- move x y z t")
@@ -141,9 +149,8 @@ def message_handler(base, vehicle, message):
 
 def start_mission(vehicle):                                                                                                                                                                                                                                                
 	# Begin mission
-	response = arm_and_takeoff(base,vehicle,2)
+	response = arm_and_takeoff(base,vehicle,4)
 	if response:
-		base.send("Precision landing...")
 		land_on_base(vehicle)
 	
 def takeoff(vehicle, altitude):
@@ -155,9 +162,9 @@ def takeoff(vehicle, altitude):
 		base.send("Takeoff height is above 25m, takeoff refused.")
 
 def land_on_base(vehicle):
-	landed = False
+	# landed = False
 	# vehicle.mode = 'LAND'
-	for _ in range(10000):
+	for _ in range(5000):
 		position_vec = get_base_position()
 		if position_vec == None:
 			# TODO: move up, down, or rotate
