@@ -53,7 +53,7 @@ def get_base_position():
 		if target_block != None:
 			position_vector = (target_block.m_x, target_block.m_y)
 			# position_vector = (target_block.m_x - base_center_target[0], base_center_target[1] - target_block.m_y)		
-		return target_block
+			return position_vector
 
 def bluetooth_listener(base, vehicle):
 	""" Runs in the background to receive any messages sent from the base. Will only process one message at a time."""
