@@ -132,7 +132,7 @@ def message_handler(base, vehicle, message):
 		except:
 			base.send("Invalid arguements for 'move'. Required format is 'move x, y, z, t'")
 		try:
-			send_ned_velocity(vehicle, int(args[1]),  int(args[2]), int(args[3]), int(args[4]))
+			send_ned_velocity(vehicle, float(args[1]),  float(args[2]), float(args[3]), float(args[4]))
 		except:
 			base.send("Move command failed with '{}'".format(sys.exc_info()[0]))
 			base.send(traceback.format_exc())
@@ -171,7 +171,7 @@ def land_on_base(vehicle):
 			base.send("Base not seen...")
 			pass
 		else:
-			base.send("Sending MAVLINK message 'land({}, {})'".format(position_vec[0], position_vec[1]))
+			base.send("Sending MAVLINK message 'land({}, {})'".format(position_vec[1], position_vec[0]))
 			send_land_message(vehicle, position_vec[0], position_vec[1])
 	base.send("Landing loop ended...")
 
