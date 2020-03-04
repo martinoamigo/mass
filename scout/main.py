@@ -132,10 +132,10 @@ def message_handler(base, vehicle, message):
 		except:
 			base.send("Invalid arguements for 'move'. Required format is 'move x, y, z, t'")
 		try:
-			send_ned_velocity(vehicle, args[1],  args[2], args[3], args[4])
+			send_ned_velocity(vehicle, int(args[1]),  int(args[2]), int(args[3]), int(args[4]))
 		except:
 			base.send("Move command failed with '{}'".format(sys.exc_info()[0]))
-			print(traceback.format_exc())
+			base.send(traceback.format_exc())
 	
 	elif message == 'pland':
 		base.send("pland signal received.")
